@@ -1,27 +1,19 @@
-#Packages
 import requests
 from urllib.parse import urlparse, urlunparse
-
-import pandas as pd
 import re
-
-# Proxy settings
-username = "56ynp05zz74iagj"
-password = "2sgak0a9v4jes82"
-proxy = "rp.proxyscrape.com:6060"
-proxy_auth = "{}:{}@{}".format(username, password, proxy)
-chromedriver_path = '/Users/alexander_wynaendts/Desktop/Entourage/code/chromedriver'
 
 def check_csv_format(startup_data):
     """
     Validates the format of the CSV file by ensuring required columns are present.
+    Prints an error message if invalid, otherwise returns the filtered DataFrame.
     """
     required_columns = ["Name", "Website URL"]
 
     # Check for missing columns
     missing_columns = [col for col in required_columns if col not in startup_data.columns]
     if missing_columns:
-        return f"CSV not well formatted: Missing column(s): [{', '.join(missing_columns)}]"
+        print(f"CSV not well formatted: Missing column(s): [{', '.join(missing_columns)}]")
+        return None  # Return None to indicate failure
 
     # Return DataFrame with only required columns
     return startup_data[required_columns]
@@ -29,7 +21,7 @@ def check_csv_format(startup_data):
 def update_missing_urls(startup_data):
     """
     Checks and updates missing or invalid 'Website URL' entries in a DataFrame,
-    and removes language variants from URLs.
+    and removes language variants from URLs. Prints an error message if there are issues.
     """
     invalid_companies = []
     url_pattern = re.compile(r'^(http|https)://')
@@ -77,21 +69,25 @@ def update_missing_urls(startup_data):
             else:
                 invalid_companies.append(company_name)
 
-    # Return companies with invalid/missing URLs or the updated DataFrame
+    # Print companies with invalid/missing URLs or return the updated DataFrame
     if invalid_companies:
-        return f"Invalid URLs for the following companies: [{', '.join(invalid_companies)}] please add or delete the row"
+        print(f"Invalid URLs for the following companies: [{', '.join(invalid_companies)}] please add or delete the row")
+        return None  # Return None to indicate failure
+
     return startup_data
 
 def data_formatting(startup_data):
-
+    """
+    Main function to format and validate the startup_data.
+    """
     # Step 1: Check CSV format
     formatted_data = check_csv_format(startup_data)
-    if isinstance(formatted_data, str):
-        raise ValueError(formatted_data)
+    if formatted_data is None:
+        return  # Stop if there's a format error
 
     # Step 2: Update missing URLs
-    startup_data = update_missing_urls(formatted_data)
-    if isinstance(startup_data, str):
-        raise ValueError(startup_data)
+    formatted_data = update_missing_urls(formatted_data)
+    if formatted_data is None:
+        return  # Stop if there are invalid URLs
 
-    return startup_data
+    return formatted_data
