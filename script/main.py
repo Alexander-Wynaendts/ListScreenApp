@@ -1,4 +1,4 @@
-from data_formatting import data_formatting
+from .data_formatting import data_formatting
 
 def main(startup_data):
 
