@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, send_file
 import os
-import subprocess
+import pandas as pd
+from script.main import main
 
 app = Flask(__name__)
 
@@ -15,16 +16,18 @@ def upload_file():
     if not file:
         return "No file uploaded", 400
 
-    # Sauvegarder le fichier CSV temporairement
-    filepath = os.path.join('uploads', file.filename)
-    file.save(filepath)
+    # Lire le fichier CSV uploadé
+    startup_data = pd.read_csv(file)
 
-    # Lancer le script main.py avec le fichier CSV en entrée
-    subprocess.run(["python3", "script/main.py", filepath])
+    # Traiter le fichier via la fonction main()
+    startup_data = main(startup_data)
 
-    # Après l'exécution de main.py, retourner le fichier CSV généré en sortie
-    output_filepath = 'output/output.csv'  # Met à jour en fonction de l'endroit où le CSV est généré
-    return send_file(output_filepath, as_attachment=True)
+    # Sauvegarder le fichier CSV de sortie
+    output_csv_path = "output.csv"
+    startup_data.to_csv(output_csv_path, index=False)
+
+    # Envoyer le fichier CSV généré à l'utilisateur
+    return send_file(output_csv_path, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

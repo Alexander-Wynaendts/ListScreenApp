@@ -1,3 +1,7 @@
-pandas
+openai
 requests
 beautifulsoup4
+selenium-wire
+selenium
+pandas
+urllib3

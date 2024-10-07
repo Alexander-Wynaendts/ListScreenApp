@@ -12,11 +12,10 @@ proxy = "rp.proxyscrape.com:6060"
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
 chromedriver_path = '/Users/alexander_wynaendts/Desktop/Entourage/code/chromedriver'
 
-def check_csv_format(file_path):
+def check_csv_format(startup_data):
     """
     Validates the format of the CSV file by ensuring required columns are present.
     """
-    startup_data = pd.read_csv(file_path)
     required_columns = ["Name", "Website URL"]
 
     # Check for missing columns
@@ -83,10 +82,10 @@ def update_missing_urls(startup_data):
         return f"Invalid URLs for the following companies: [{', '.join(invalid_companies)}] please add or delete the row"
     return startup_data
 
-def data_formatting(file_name):
+def data_formatting(startup_data):
 
     # Step 1: Check CSV format
-    formatted_data = check_csv_format(f"/Users/alexander_wynaendts/Desktop/Entourage/ListScreenApp/data/input/{file_name}")
+    formatted_data = check_csv_format(startup_data)
     if isinstance(formatted_data, str):
         raise ValueError(formatted_data)
 
