@@ -3,6 +3,9 @@ from .data_formatting import data_formatting
 from .website_screening import parallel_website_screening
 from .website_analysis import parallel_website_analysis
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def main(startup_data):
     # Appeler la fonction de data_formatting pour traiter les données
     startup_data = data_formatting(startup_data)

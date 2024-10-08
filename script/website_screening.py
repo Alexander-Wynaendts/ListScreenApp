@@ -17,7 +17,7 @@ import os
 from dotenv import load_dotenv
 
 import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore")
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")

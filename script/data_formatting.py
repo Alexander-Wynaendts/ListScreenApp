@@ -2,6 +2,9 @@ import requests
 from urllib.parse import urlparse, urlunparse
 import re
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def check_csv_format(startup_data):
     """
     Validates the format of the CSV file by ensuring required columns are present.
