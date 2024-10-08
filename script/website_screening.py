@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from concurrent.futures import ThreadPoolExecutor
+from webdriver_manager.chrome import ChromeDriverManager
 
 import time
 import re
@@ -25,9 +26,9 @@ username = os.getenv("PROXY_USERNAME")
 password = os.getenv("PROXY_PASSWORD")
 proxy = os.getenv("PROXY_URL")
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
-chromedriver_path = '/Users/alexander_wynaendts/Desktop/Entourage/ListScreenApp/script/chromedriver'
 
-def init_selenium(use_external_proxy=False):
+# Function to initialize Selenium with or without an external proxy
+def init_selenium(use_external_proxy=False, proxy=None, username=None, password=None):
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
@@ -36,10 +37,10 @@ def init_selenium(use_external_proxy=False):
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
-    # Use Service to specify the path to ChromeDriver
-    service = Service(chromedriver_path)
+    # Default initialization without proxy
+    service = Service(ChromeDriverManager().install())
 
-    if use_external_proxy:
+    if use_external_proxy and proxy and username and password:
         # Proxy settings with authentication using Selenium Wire
         proxy_options = {
             'proxy': {
@@ -49,9 +50,10 @@ def init_selenium(use_external_proxy=False):
                 'http2': False  # Disable HTTP/2
             }
         }
+        # Initialize WebDriver with proxy options
         driver = webdriver.Chrome(service=service, options=chrome_options, seleniumwire_options=proxy_options)
     else:
-        # Default initialization without proxy
+        # Initialize WebDriver without proxy options
         driver = webdriver.Chrome(service=service, options=chrome_options)
 
     return driver

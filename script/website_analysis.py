@@ -59,6 +59,7 @@ def parallel_website_analysis(startup_data):
     """
     Running the GPT analysis in parallel for filtered SaaS data.
     """
+
     def track_progress(website_data, idx):
         """
         Perform GPT analysis with rate limiting and retry mechanism.
@@ -114,6 +115,6 @@ def parallel_website_analysis(startup_data):
             startup_data.at[index, 'GPT Region'] = formated_analysis['GPT Region']
 
     # Drop unnecessary columns and save final version
-    startup_data = startup_data.drop(columns=['GPT Website Screen', 'Website Data', 'GPT Raw Analysis'])
+    startup_data = startup_data.drop(columns=['GPT Website Screen', 'GPT Raw Analysis'])
 
     return startup_data
