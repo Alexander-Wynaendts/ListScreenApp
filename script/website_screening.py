@@ -29,7 +29,7 @@ proxy_auth = "{}:{}@{}".format(username, password, proxy)
 chromedriver_path = "/opt/render/project/src/script/chromedriver"
 
 # Function to initialize Selenium with or without an external proxy
-def init_selenium(use_external_proxy=False):
+def init_selenium(use_external_proxy=True):
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
@@ -77,7 +77,7 @@ def website_scraping(website_url):
 
     try:
         # Try with no proxy or local proxy first
-        driver = init_selenium(use_external_proxy=False)
+        driver = init_selenium(use_external_proxy=True)
         driver.get(website_url)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
 
@@ -198,7 +198,7 @@ def website_links(website_url):
         return links
 
     # Try scraping without external proxy
-    links = scrape_website(website_url, use_external_proxy=False)
+    links = scrape_website(website_url, use_external_proxy=True)
 
     # If no links found, try with external proxy
     if not links:
@@ -207,7 +207,7 @@ def website_links(website_url):
     # If still no links, try removing 'www.' and scraping again
     if not links and "www." in website_url:
         website_url = website_url.replace("www.", "")
-        links = scrape_website(website_url, use_external_proxy=False)
+        links = scrape_website(website_url, use_external_proxy=True)
 
         if not links:
             links = scrape_website(website_url, use_external_proxy=True)
