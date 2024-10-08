@@ -1,24 +1,12 @@
 import openai
-
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin,urlparse
-
-from seleniumwire import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from concurrent.futures import ThreadPoolExecutor
-from webdriver_manager.chrome import ChromeDriverManager
-
-import time
+from urllib.parse import urljoin, urlparse
+import requests
 import re
 import os
 from dotenv import load_dotenv
-
-import warnings
-warnings.filterwarnings("ignore")
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -27,76 +15,41 @@ password = os.getenv("PROXY_PASSWORD")
 proxy = os.getenv("PROXY_URL")
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
 
-# Function to initialize Selenium with or without an external proxy
-def init_selenium(use_external_proxy=False):
+import warnings
+warnings.filterwarnings("ignore")
 
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_experimental_option('useAutomationExtension', False)
+# Function to initialize proxies for requests
+def get_proxies():
+    return {
+        'http': f'http://{proxy_auth}',
+        'https': f'https://{proxy_auth}'
+    }
 
-    # Use the correct ChromeDriver path
-    service = Service(ChromeDriverManager().install())
-
+# Function to perform a simple HTML request using or without proxies
+def simple_html_request(url, use_external_proxy=False):
     try:
-        if use_external_proxy and proxy and username and password:
-            # Proxy settings with authentication using Selenium Wire
-            proxy_options = {
-                'proxy': {
-                    'http': f'http://{username}:{password}@{proxy}',
-                    'https': f'https://{username}:{password}@{proxy}',
-                    'no_proxy': 'localhost,127.0.0.1',  # Bypass the proxy for local addresses
-                    'http2': False  # Disable HTTP/2
-                }
-            }
-            # Initialize WebDriver with proxy options
-            driver = webdriver.Chrome(service=service, options=chrome_options, seleniumwire_options=proxy_options)
+        if use_external_proxy:
+            response = requests.get(url, proxies=get_proxies(), timeout=10)
         else:
-            # Initialize WebDriver without proxy options
-            driver = webdriver.Chrome(service=service, options=chrome_options)
-
-        # Print ChromeDriver version or some info to verify if it works
-        print(f"ChromeDriver initialized: {driver.capabilities['browserVersion']}")
-        return driver
-
+            response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.text
     except Exception as e:
-        print(f"Error initializing ChromeDriver: {e}")
+        print(f"Error fetching URL: {url}, Error: {str(e)}")
         return None
 
-def website_scraping(website_url):
+def website_scraping(website_url, use_external_proxy=False):
     """
     Scrapes the content of the given website URL and extracts structured information.
-    Handles dynamic content loading using Selenium WebDriver and waits for key elements.
     """
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']  # Tags we want to extract
     structured_text = []
-    driver = None
 
-    try:
-        # Try with no proxy or local proxy first
-        driver = init_selenium(use_external_proxy=False)
-        driver.get(website_url)
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
+    # Make the HTML request
+    page_source = simple_html_request(website_url, use_external_proxy)
+    if not page_source:
+        return "Failed to scrape the website."
 
-    except Exception as e:
-        # Close the current driver if already initialized
-        if driver:
-            driver.quit()
-        # Fallback to external proxy
-        driver = init_selenium(use_external_proxy=True)
-        try:
-            driver.get(website_url)
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
-        except Exception as e:
-            if driver:
-                driver.quit()
-            return "Failed to scrape the website using both local and external proxies."
-
-    # Now that the page is loaded, get the page source
-    page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'html.parser')
 
     # Extract the page title
@@ -125,95 +78,57 @@ def website_scraping(website_url):
         elif tag.name == 'em':
             structured_text.append(f"*{tag.get_text(strip=True)}*")
 
-    driver.quit()
     return "\n".join(structured_text)
 
-def website_links(website_url):
+def website_links(website_url, use_external_proxy=False):
     """
     Scrapes the content of the given website URL and extracts structured information.
-    Handles dynamic content loading using Selenium WebDriver and waits for key elements.
-    Retries with a proxy if no links are found on the first attempt.
     """
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']  # Tags to extract
     structured_text = []
 
-    def scrape_website(website_url, use_external_proxy):
-        """
-        Inner function to scrape the website content.
-        """
-        driver = init_selenium(use_external_proxy=use_external_proxy)
-        links = set()
+    # Make the HTML request
+    page_source = simple_html_request(website_url, use_external_proxy)
+    if not page_source:
+        return "Failed to scrape the website.", []
 
-        try:
-            driver.get(website_url)
+    soup = BeautifulSoup(page_source, 'html.parser')
+    links = set()
 
-            # Wait for the body of the page to load before proceeding
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
+    # Extract the page title
+    page_title = soup.title.get_text(strip=True) if soup.title else "No Title"
+    structured_text.append(f"H1: {page_title}")
 
-            # Get the page source after loading
-            page_source = driver.page_source
-            soup = BeautifulSoup(page_source, 'html.parser')
+    # Extract the meta description
+    meta_description = soup.find('meta', attrs={'name': 'description'})
+    if meta_description:
+        structured_text.append(f"DESCRIPTION: {meta_description['content']}")
 
-            # Extract the page title
-            page_title = soup.title.get_text(strip=True) if soup.title else "No Title"
-            structured_text.append(f"H1: {page_title}")
+    # Extract important tags from the page
+    for tag_name in important_tags:
+        for tag in soup.find_all(tag_name):
+            if tag_name in ['h1', 'h2', 'h3']:
+                structured_text.append(f"{tag_name.upper()}: {tag.get_text(strip=True)}")
+            elif tag_name == 'p':
+                text = tag.get_text(strip=True)
+                if len(text) > 10:  # Only add meaningful paragraphs
+                    structured_text.append(f"PARAGRAPH: {text}")
+            elif tag_name == 'ul':
+                structured_text.append("LIST:")
+            elif tag_name == 'li':
+                structured_text.append(f"- {tag.get_text(strip=True)}")
+            elif tag_name == 'strong':
+                structured_text.append(f"**{tag.get_text(strip=True)}**")
+            elif tag_name == 'em':
+                structured_text.append(f"*{tag.get_text(strip=True)}*")
 
-            # Extract the meta description
-            meta_description = soup.find('meta', attrs={'name': 'description'})
-            if meta_description:
-                structured_text.append(f"DESCRIPTION: {meta_description['content']}")
+    # Find all links on the page
+    for link in soup.find_all('a', href=True):
+        full_link = urljoin(website_url, link['href'])
 
-            # Extract important tags from the page
-            for tag_name in important_tags:
-                for tag in soup.find_all(tag_name):
-                    if tag_name in ['h1', 'h2', 'h3']:
-                        structured_text.append(f"{tag_name.upper()}: {tag.get_text(strip=True)}")
-                    elif tag_name == 'p':
-                        text = tag.get_text(strip=True)
-                        if len(text) > 10:  # Only add meaningful paragraphs
-                            structured_text.append(f"PARAGRAPH: {text}")
-                    elif tag_name == 'ul':
-                        structured_text.append("LIST:")
-                    elif tag_name == 'li':
-                        structured_text.append(f"- {tag.get_text(strip=True)}")
-                    elif tag_name == 'strong':
-                        structured_text.append(f"**{tag.get_text(strip=True)}**")
-                    elif tag_name == 'em':
-                        structured_text.append(f"*{tag.get_text(strip=True)}*")
-
-            # Find all links on the page
-            for link in soup.find_all('a', href=True):
-                full_link = urljoin(website_url, link['href'])
-
-                # Check if the link starts with the same website_url
-                if full_link.startswith(website_url) and full_link != website_url and urlparse(full_link).path != '/':
-                    links.add(full_link)
-
-        except Exception as e:
-            print(f"Error scraping the website: {str(e)}")
-        finally:
-            # Ensure the driver is always closed
-            driver.quit()
-
-        return links
-
-    # Try scraping without external proxy
-    links = scrape_website(website_url, use_external_proxy=False)
-
-    # If no links found, try with external proxy
-    if not links:
-        links = scrape_website(website_url, use_external_proxy=True)
-
-    # If still no links, try removing 'www.' and scraping again
-    if not links and "www." in website_url:
-        website_url = website_url.replace("www.", "")
-        links = scrape_website(website_url, use_external_proxy=False)
-
-        if not links:
-            links = scrape_website(website_url, use_external_proxy=True)
-
-    if not links:
-        print(f"Failed to scrape any links from {website_url}")
+        # Check if the link starts with the same website_url
+        if full_link.startswith(website_url) and full_link != website_url and urlparse(full_link).path != '/':
+            links.add(full_link)
 
     return "\n".join(structured_text), links
 
@@ -245,7 +160,7 @@ def gpt_link_selection(website_links):
     # Use regex to extract URLs (plain text only, no markdown)
     links = re.findall(r'(https?://[^\s]+)', gpt_response)
 
-    # Return the top 3 links
+    # Return the top 2 links
     return links[:2]
 
 def gpt_website_screen(website_data):
@@ -255,7 +170,7 @@ def gpt_website_screen(website_data):
 
     {website_data}
 
-    Give a binary ourput:
+    Give a binary output:
     - "1" for a Software company
     - "0" for a Hardware company
     """
