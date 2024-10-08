@@ -16,6 +16,9 @@ import re
 import os
 from dotenv import load_dotenv
 
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 username = os.getenv("PROXY_USERNAME")
