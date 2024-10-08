@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-# Update the package list and install necessary libraries
-apt-get update && apt-get install -y \
-    libx11-xcb1 libxcomposite1 libxdamage1 libxi6 libxtst6 libnss3 libxrandr2 \
-    libasound2 libpangocairo-1.0-0 libatk1.0-0 libgtk-3-0 libcups2 \
-    libdbus-glib-1-2 libxt6 curl unzip
-
 # Create a directory for Chrome and ChromeDriver in /opt/render/chrome if it doesn't exist
 mkdir -p /opt/render/chrome
 
@@ -15,13 +9,11 @@ if [ ! -f /opt/render/chrome/opt/google/chrome/chrome ]; then
     CHROME_VERSION="stable"
     curl -LO https://dl.google.com/linux/direct/google-chrome-${CHROME_VERSION}_current_amd64.deb
     dpkg -x google-chrome-${CHROME_VERSION}_current_amd64.deb /opt/render/chrome
+    chmod +x /opt/render/chrome/opt/google/chrome/chrome
     echo "Google Chrome installed successfully."
 else
     echo "Google Chrome is already installed."
 fi
-
-# Ensure executable permissions for Google Chrome
-chmod +x /opt/render/chrome/opt/google/chrome/chrome
 
 # Get the installed version of Google Chrome
 CHROME_INSTALLED_VERSION=$(/opt/render/chrome/opt/google/chrome/chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
@@ -32,7 +24,7 @@ if [ ! -f /opt/render/chrome/chromedriver ]; then
     CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_INSTALLED_VERSION%.*})
     curl -LO https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
 
-    # Verify the contents of the .zip file before extracting
+        # Verify the contents of the .zip file before extracting
     echo "Verifying contents of chromedriver_linux64.zip:"
     unzip -l chromedriver_linux64.zip
 
