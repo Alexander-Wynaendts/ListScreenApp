@@ -9,3 +9,4 @@ pandas
 urllib3
 flask
 gunicorn
+protobuf==4.24.4
