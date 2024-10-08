@@ -4,6 +4,7 @@ beautifulsoup4
 selenium-wire
 selenium
 blinker
+mitmproxy
 pandas
 urllib3
 flask
