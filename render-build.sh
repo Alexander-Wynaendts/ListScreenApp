@@ -21,7 +21,7 @@ if [ ! -f "$CHROME_PATH" ]; then
   # Clean up
   rm /tmp/chrome.deb
 else
-  echo "Chrome already installed at $CHROME_PATH."
+  echo "Chrome already installed."
 fi
 
 # Get the Chrome version to download matching ChromeDriver
@@ -53,12 +53,8 @@ if [ ! -f "$CHROMEDRIVER_PATH" ]; then
     exit 1
   fi
 else
-  echo "ChromeDriver already installed at $CHROMEDRIVER_PATH."
+  echo "ChromeDriver already installed."
 fi
-
-# Verify the installation by printing the paths
-echo "ChromeDriver Path: $CHROMEDRIVER_PATH"
-echo "Chrome Path: $CHROME_PATH"
 
 # Export the paths so they can be used by your Python scripts
 export CHROME_PATH=$CHROME_PATH
