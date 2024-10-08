@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from concurrent.futures import ThreadPoolExecutor
+from webdriver_manager.chrome import ChromeDriverManager
 
 import time
 import re
@@ -20,16 +21,15 @@ import warnings
 warnings.filterwarnings("ignore")
 
 load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 username = os.getenv("PROXY_USERNAME")
 password = os.getenv("PROXY_PASSWORD")
 proxy = os.getenv("PROXY_URL")
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
 
-chromedriver_path = '/usr/local/bin/chromedriver'
-
 # Function to initialize Selenium with or without an external proxy
 def init_selenium(use_external_proxy=False):
+
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
@@ -39,7 +39,7 @@ def init_selenium(use_external_proxy=False):
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
     # Use the correct ChromeDriver path
-    service = Service(executable_path=chromedriver_path)
+    service = Service(ChromeDriverManager().install())
 
     try:
         if use_external_proxy and proxy and username and password:
