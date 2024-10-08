@@ -8,7 +8,7 @@ def main(startup_data):
     startup_data = data_formatting(startup_data)
 
     # Keep only the first 5 rows for processing
-    startup_data = startup_data[:2]
+    startup_data = startup_data[:5]
 
     # Check if the processed data is a DataFrame
     if not isinstance(startup_data, pd.DataFrame):

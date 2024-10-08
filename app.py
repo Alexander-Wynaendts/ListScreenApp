@@ -1,4 +1,5 @@
-from flask import Flask, request, send_file, render_template
+from flask import Flask, render_template, request, send_file, Response
+import subprocess
 import pandas as pd
 import io
 from script.main import main
@@ -36,6 +37,15 @@ def upload_file():
     except Exception as e:
         print(f"Error occurred: {str(e)}")
         return f"Error processing file: {str(e)}", 500
+
+# Endpoint to get real-time log output
+@app.route('/logs')
+def stream_logs():
+    def generate():
+        with subprocess.Popen(["tail", "-f", "path_to_your_log_file.log"], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
+            for line in iter(p.stdout.readline, b''):
+                yield line.decode('utf-8')
+    return Response(generate(), mimetype='text/plain')
 
 if __name__ == '__main__':
     app.run(debug=True)
