@@ -1,24 +1,20 @@
 #!/usr/bin/env bash
 
-# Mettre à jour les paquets
-apt-get update
+# Create a directory for Chrome if it doesn't exist
+mkdir -p ~/chrome
 
-# Installer les dépendances requises
-apt-get install -y curl unzip
-
-# Télécharger et installer Google Chrome stable
+# Download and install Google Chrome (headless)
 CHROME_VERSION="stable"
 curl -LO https://dl.google.com/linux/direct/google-chrome-${CHROME_VERSION}_current_amd64.deb
-dpkg -i google-chrome-${CHROME_VERSION}_current_amd64.deb || apt-get -fy install
+dpkg -x google-chrome-${CHROME_VERSION}_current_amd64.deb ~/chrome
 
-# Vérifier l'installation de Chrome
+# Set the Chrome binary path
+export PATH=$PATH:~/chrome/opt/google/chrome
+
+# Set the existing ChromeDriver path from the repository
+chmod +x ./script/chromedriver
+export PATH=$PATH:./script
+
+# Verify the installation of Google Chrome and ChromeDriver
 google-chrome --version
-
-# Télécharger et installer ChromeDriver correspondant à la version de Chrome
-CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-curl -LO https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip -d /usr/local/bin/
-chmod +x /usr/local/bin/chromedriver
-
-# Vérifier l'installation de ChromeDriver
-chromedriver --version
+./script/chromedriver --version
