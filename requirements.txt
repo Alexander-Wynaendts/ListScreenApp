@@ -3,7 +3,7 @@ requests
 beautifulsoup4
 selenium-wire
 selenium
-blinker
+blinker==1.5
 mitmproxy
 pandas
 urllib3

@@ -62,7 +62,6 @@ def parallel_website_analysis(startup_data):
         """
         try:
             gpt_analysis, formated_analysis = gpt_enterprise_analysis(website_data)
-            print(f"Progress: {idx + 1}/{len(saas_data)}")
             return gpt_analysis, formated_analysis
         except openai.error.RateLimitError:
             print(f"Rate limit reached, retrying after 5 seconds...")
