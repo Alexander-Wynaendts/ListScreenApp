@@ -38,10 +38,14 @@ def init_selenium(use_external_proxy=False):
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
+    # Print the actual path that is being used
+    print(f"Attempting to use ChromeDriver at: {chromedriver_path}")
+
     if not os.path.exists(chromedriver_path):
-        print(f"ChromeDriver not found at {chromedriver_path}")
+        print(f"Error: ChromeDriver not found at {chromedriver_path}")
+        raise FileNotFoundError(f"ChromeDriver not found at {chromedriver_path}")
     else:
-        print(f"ChromeDriver found on {chromedriver_path}" )
+        print(f"ChromeDriver successfully found at {chromedriver_path}")
 
     # Use the correct ChromeDriver path
     service = Service(executable_path=chromedriver_path)
@@ -62,8 +66,8 @@ def init_selenium(use_external_proxy=False):
         # Initialize WebDriver without proxy options
         driver = webdriver.Chrome(service=service, options=chrome_options)
 
-
     return driver
+
 
 def website_scraping(website_url):
     """
