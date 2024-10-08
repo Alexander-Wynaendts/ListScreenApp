@@ -3,6 +3,7 @@ requests
 beautifulsoup4
 selenium-wire
 selenium
+blinker
 pandas
 urllib3
 flask
