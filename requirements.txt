@@ -13,7 +13,7 @@ webdriver-manager
 python-dotenv
 
 # OpenAI API
-openai
+openai>=1.0.0
 
 # Data manipulation
 pandas
