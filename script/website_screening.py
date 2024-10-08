@@ -26,7 +26,7 @@ password = os.getenv("PROXY_PASSWORD")
 proxy = os.getenv("PROXY_URL")
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
 
-chromedriver_path = "/opt/render/project/src/script/chromedriver"
+chromedriver_path = '/usr/local/bin/chromedriver'
 
 # Function to initialize Selenium with or without an external proxy
 def init_selenium(use_external_proxy=False):
