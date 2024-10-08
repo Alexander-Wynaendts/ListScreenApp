@@ -16,12 +16,29 @@ fi
 
 # Get the installed version of Google Chrome
 CHROME_INSTALLED_VERSION=$(/opt/render/chrome/opt/google/chrome/chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+CHROME_MAJOR_VERSION=$(echo $CHROME_INSTALLED_VERSION | cut -d '.' -f 1-3)
 
 # Download and install ChromeDriver if not already present
 if [ ! -f /opt/render/chrome/chromedriver ]; then
     echo "ChromeDriver not found. Downloading and installing ChromeDriver..."
-    CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_INSTALLED_VERSION%.*})
-    curl -LO https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
+
+    # Fetch the corresponding ChromeDriver version based on the major Chrome version
+    CHROME_DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION}")
+
+    # If the fetch fails or version is empty, exit with an error message
+    if [ -z "$CHROME_DRIVER_VERSION" ]; then
+        echo "Error: Unable to determine ChromeDriver version for Chrome $CHROME_MAJOR_VERSION."
+        exit 1
+    fi
+
+    # Download and install the correct ChromeDriver version
+    curl -LO "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to download ChromeDriver."
+        exit 1
+    fi
+
     unzip chromedriver_linux64.zip -d /opt/render/chrome
     chmod +x /opt/render/chrome/chromedriver
     echo "ChromeDriver installed successfully for Chrome version ${CHROME_INSTALLED_VERSION}."
