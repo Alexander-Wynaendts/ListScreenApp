@@ -10,7 +10,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from concurrent.futures import ThreadPoolExecutor
-from webdriver_manager.chrome import ChromeDriverManager
 
 import time
 import re
@@ -27,8 +26,10 @@ password = os.getenv("PROXY_PASSWORD")
 proxy = os.getenv("PROXY_URL")
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
 
+chromedriver_path = os.getenv("CHROME_PATH")
+
 # Function to initialize Selenium with or without an external proxy
-def init_selenium(use_external_proxy=False, proxy=None, username=None, password=None):
+def init_selenium(use_external_proxy=False):
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
@@ -37,8 +38,8 @@ def init_selenium(use_external_proxy=False, proxy=None, username=None, password=
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
-    # Default initialization without proxy
-    service = Service(ChromeDriverManager().install())
+    # Use the correct ChromeDriver path
+    service = Service(executable_path=chromedriver_path)
 
     if use_external_proxy and proxy and username and password:
         # Proxy settings with authentication using Selenium Wire
