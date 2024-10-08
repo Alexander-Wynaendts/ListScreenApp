@@ -41,7 +41,7 @@ def init_selenium(use_external_proxy=False):
     if not os.path.exists(chromedriver_path):
         print(f"ChromeDriver not found at {chromedriver_path}")
     else:
-        print(chromedriver_path)
+        print(f"ChromeDriver found on {chromedriver_path}" )
 
     # Use the correct ChromeDriver path
     service = Service(executable_path=chromedriver_path)

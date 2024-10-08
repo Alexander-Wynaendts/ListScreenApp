@@ -1,61 +1,53 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Create a directory for Chrome and ChromeDriver in /opt/render/chrome if it doesn't exist
-mkdir -p /opt/render/chrome
+# Set the paths for Chrome and ChromeDriver
+CHROME_PATH="/opt/render/chrome/google-chrome"
+CHROMEDRIVER_PATH="/opt/render/chrome/chromedriver"
 
-# Download and install Google Chrome (headless) if not already present
-if [ ! -f /opt/render/chrome/opt/google/chrome/chrome ]; then
-    echo "Google Chrome not found. Downloading and installing Google Chrome..."
-    CHROME_VERSION="stable"
-    curl -LO https://dl.google.com/linux/direct/google-chrome-${CHROME_VERSION}_current_amd64.deb
-    dpkg -x google-chrome-${CHROME_VERSION}_current_amd64.deb /opt/render/chrome
-    chmod +x /opt/render/chrome/opt/google/chrome/chrome
-    echo "Google Chrome installed successfully."
+# Check if Chrome is installed
+if [ ! -f "$CHROME_PATH" ]; then
+  echo "Chrome not found. Installing Chrome..."
+
+  # Create the directory for Chrome
+  mkdir -p /opt/render/chrome/
+
+  # Download Chrome
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
+
+  # Install Chrome
+  sudo apt-get update
+  sudo apt-get install -y /tmp/chrome.deb
+
+  # Clean up
+  rm /tmp/chrome.deb
 else
-    echo "Google Chrome is already installed."
+  echo "Chrome already installed."
 fi
 
-# Get the installed version of Google Chrome
-CHROME_INSTALLED_VERSION=$(/opt/render/chrome/opt/google/chrome/chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+# Check if ChromeDriver is installed
+if [ ! -f "$CHROMEDRIVER_PATH" ]; then
+  echo "ChromeDriver not found. Installing ChromeDriver..."
 
-# Download and install ChromeDriver if not already present
-if [ ! -f /opt/render/chrome/chromedriver ]; then
-    echo "ChromeDriver not found. Downloading and installing ChromeDriver..."
-    CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_INSTALLED_VERSION%.*})
-    curl -LO https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
+  # Get the version of Chrome
+  CHROME_VERSION=$("$CHROME_PATH" --version | grep -oP '\d+\.\d+\.\d+')
 
-        # Verify the contents of the .zip file before extracting
-    echo "Verifying contents of chromedriver_linux64.zip:"
-    unzip -l chromedriver_linux64.zip
+  # Download the matching ChromeDriver version
+  wget https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip -O /tmp/chromedriver.zip
 
-    unzip chromedriver_linux64.zip -d /opt/render/chrome
-    chmod +x /opt/render/chrome/chromedriver
-    echo "ChromeDriver installed successfully for Chrome version ${CHROME_INSTALLED_VERSION}."
+  # Unzip ChromeDriver
+  unzip /tmp/chromedriver.zip -d /opt/render/chrome/
+
+  # Make ChromeDriver executable
+  chmod +x /opt/render/chrome/chromedriver
+
+  # Clean up
+  rm /tmp/chromedriver.zip
 else
-    echo "ChromeDriver is already installed."
+  echo "ChromeDriver already installed."
 fi
 
-# Add Chrome and ChromeDriver to the PATH
-export PATH=$PATH:/opt/render/chrome/opt/google/chrome
-export PATH=$PATH:/opt/render/chrome
+# Export the paths so they can be used by your Python scripts
+export CHROME_PATH=$CHROME_PATH
+export CHROMEDRIVER_PATH=$CHROMEDRIVER_PATH
 
-# Verify the installation of Google Chrome and ChromeDriver
-if [ -f /opt/render/chrome/opt/google/chrome/chrome ]; then
-    /opt/render/chrome/opt/google/chrome/chrome --version
-else
-    echo "Error: Google Chrome was not installed correctly."
-    exit 1
-fi
-
-if [ -f /opt/render/chrome/chromedriver ]; then
-    /opt/render/chrome/chromedriver --version
-else
-    echo "Error: ChromeDriver was not installed correctly."
-    exit 1
-fi
-
-# Clean up the downloaded .deb and .zip files to save space
-rm -f google-chrome-${CHROME_VERSION}_current_amd64.deb
-rm -f chromedriver_linux64.zip
-
-echo "Setup completed successfully."
+echo "Setup completed."
