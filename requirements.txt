@@ -25,4 +25,4 @@ mitmproxy
 blinker==1.5
 
 # Miscellaneous
-protobuf==
+protobuf
