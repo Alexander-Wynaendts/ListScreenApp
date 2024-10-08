@@ -1,28 +1,28 @@
 # Flask and server
-flask==3.0.3
-gunicorn==23.0.0
+flask
+gunicorn
 
 # Scraping and web automation
-requests==2.32.3
-beautifulsoup4==4.12.3
-selenium-wire==5.1.0
-selenium==4.25.0
+requests
+beautifulsoup4
+selenium-wire
+selenium
 
 # Environment variables
-python-dotenv==1.0.0
+python-dotenv
 
 # OpenAI API
-openai==1.51.1
+openai
 
 # Data manipulation
-pandas==2.2.3
+pandas
 
 # Networking and proxy
-urllib3==2.2.3
-mitmproxy==10.3.1
+urllib3
+mitmproxy
 
 # Messaging and notifications
 blinker==1.5
 
 # Miscellaneous
-protobuf==4.24.4
+protobuf==
