@@ -26,6 +26,6 @@ wget https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_li
 unzip chromedriver_linux64.zip -d script
 chmod +x script/chromedriver
 
-# Print versions
+echo "Checking Chrome version"
 $STORAGE_DIR/chrome/opt/google/chrome/google-chrome --version
 script/chromedriver --version
