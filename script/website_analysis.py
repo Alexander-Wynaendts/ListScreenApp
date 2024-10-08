@@ -11,7 +11,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def gpt_enterprise_analysis(website_data):
     prompt = f"""
@@ -115,6 +115,6 @@ def parallel_website_analysis(startup_data):
             startup_data.at[index, 'GPT Region'] = formated_analysis['GPT Region']
 
     # Drop unnecessary columns and save final version
-    startup_data = startup_data.drop(columns=['GPT Website Screen', 'Website Data', 'GPT Raw Analysis'])
+    startup_data = startup_data.drop(columns=['GPT Website Screen', 'GPT Raw Analysis'])
 
     return startup_data
