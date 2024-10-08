@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# Update the package list
-apt-get update
-
-# Install required system libraries for headless Chrome
-apt-get install -y libx11-xcb1 libxcomposite1 libxdamage1 libxi6 libxtst6 libnss3 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libgtk-3-0 libcups2 libdbus-glib-1-2 libxt6
+# Update the package list and install necessary libraries
+apt-get update && apt-get install -y \
+    libx11-xcb1 libxcomposite1 libxdamage1 libxi6 libxtst6 libnss3 libxrandr2 \
+    libasound2 libpangocairo-1.0-0 libatk1.0-0 libgtk-3-0 libcups2 \
+    libdbus-glib-1-2 libxt6 curl unzip
 
 # Create a directory for Chrome and ChromeDriver in /opt/render/chrome if it doesn't exist
 mkdir -p /opt/render/chrome
@@ -66,4 +66,4 @@ fi
 rm -f google-chrome-${CHROME_VERSION}_current_amd64.deb
 rm -f chromedriver_linux64.zip
 
-echo "Setup completed successfully."s
+echo "Setup completed successfully."
