@@ -26,13 +26,13 @@ fi
 # Get the exact Chrome version
 CHROME_VERSION=$(/opt/render/chrome/opt/google/chrome/chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
 
-# Fetch the correct ChromeDriver version based on Chrome version
+# Try to fetch the corresponding ChromeDriver version for the installed Chrome
 CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
 
-# Check if the CHROMEDRIVER_VERSION was fetched correctly
+# If the exact version cannot be found, use the latest stable ChromeDriver version
 if [ -z "$CHROMEDRIVER_VERSION" ]; then
-    echo "Error fetching ChromeDriver version for Chrome $CHROME_VERSION."
-    exit 1
+    echo "Unable to find ChromeDriver for Chrome version $CHROME_VERSION. Falling back to the latest ChromeDriver version."
+    CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
 fi
 
 # Download ChromeDriver
