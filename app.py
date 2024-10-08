@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify, Response, stream_with_context, send_file, render_template
+from flask import Flask, request, send_file, render_template
 import pandas as pd
 import io
-from script.main import main  # Import your main function
+from script.main import main
 
 app = Flask(__name__)
 
@@ -11,36 +11,31 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    file = request.files.get('file')
-    if not file:
-        return jsonify({
-            'logs': 'No file uploaded',
-            'success': False
-        })
+    try:
+        file = request.files.get('file')
+        if not file:
+            return "No file uploaded", 400
 
-    df = pd.read_csv(file)
+        df = pd.read_csv(file)
 
-    # Run the main function on the DataFrame (this is your processing logic)
-    logs, startup_data = main(df)  # Assuming main() returns logs and processed dataframe
+        # Call the main processing function
+        startup_data = main(df)
 
-    if startup_data is None:
-        return jsonify({
-            'logs': logs,
-            'success': False
-        })
+        # Log the processed dataframe
+        if startup_data is None:
+            return "Error processing file", 400
 
-    logs = 'CSV successfully processed.'
+        # Convert the processed DataFrame to CSV in-memory using UTF-8 encoding
+        output = io.BytesIO()
+        startup_data.to_csv(output, index=False, encoding='utf-8')
+        output.seek(0)
 
-    # Convert the DataFrame to a CSV in-memory
-    output = io.StringIO()
-    startup_data.to_csv(output, index=False)
-    output.seek(0)  # Go back to the beginning of the StringIO object
+        # Send the file back as a downloadable CSV
+        return send_file(output, mimetype='text/csv', as_attachment=True, download_name='processed_data.csv')
 
-    return jsonify({
-        'logs': logs,
-        'csv_content': output.getvalue(),  # Pass the CSV content in the response
-        'success': True
-    })
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return f"Error processing file: {str(e)}", 500
 
 if __name__ == '__main__':
     app.run(debug=True)

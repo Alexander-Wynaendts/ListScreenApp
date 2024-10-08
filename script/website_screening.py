@@ -1,8 +1,7 @@
 import openai
 
-import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin,urlparse, urlunparse
+from urllib.parse import urljoin,urlparse
 
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
@@ -10,18 +9,14 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, WebDriverException, InvalidArgumentException
 from concurrent.futures import ThreadPoolExecutor
 
 import time
-import pandas as pd
 import re
-import random
-import time
-from collections import Counter
-import warnings
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 username = os.getenv("PROXY_USERNAME")
 password = os.getenv("PROXY_PASSWORD")
@@ -83,7 +78,6 @@ def website_scraping(website_url):
             driver.get(website_url)
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
         except Exception as e:
-            print(f"Failed with external proxy: {str(e)}")
             if driver:
                 driver.quit()
             return "Failed to scrape the website using both local and external proxies."
@@ -195,17 +189,14 @@ def website_links(website_url):
 
     # If no links found, try with external proxy
     if not links:
-        print(f"No links found, retrying with external proxy on {website_url}")
         links = scrape_website(website_url, use_external_proxy=True)
 
     # If still no links, try removing 'www.' and scraping again
     if not links and "www." in website_url:
         website_url = website_url.replace("www.", "")
-        print(f"No links found, retrying without 'www' on {website_url}")
         links = scrape_website(website_url, use_external_proxy=False)
 
         if not links:
-            print(f"Retrying with external proxy on {website_url}")
             links = scrape_website(website_url, use_external_proxy=True)
 
     if not links:
