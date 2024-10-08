@@ -11,10 +11,15 @@ dpkg -x google-chrome-${CHROME_VERSION}_current_amd64.deb ~/chrome
 # Set the Chrome binary path
 export PATH=$PATH:~/chrome/opt/google/chrome
 
-# Set the existing ChromeDriver path from the repository
-chmod +x ./script/chromedriver
-export PATH=$PATH:./script
+# Download and install the correct ChromeDriver for the environment
+CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+curl -LO https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip -d ~/chrome
+chmod +x ~/chrome/chromedriver
+
+# Add ChromeDriver to the PATH
+export PATH=$PATH:~/chrome
 
 # Verify the installation of Google Chrome and ChromeDriver
 google-chrome --version
-./script/chromedriver --version
+chromedriver --version
