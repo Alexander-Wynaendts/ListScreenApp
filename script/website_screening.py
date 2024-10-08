@@ -27,6 +27,7 @@ proxy = os.getenv("PROXY_URL")
 proxy_auth = "{}:{}@{}".format(username, password, proxy)
 
 chromedriver_path = os.getenv("CHROME_PATH")
+chrome_binary_location = "/opt/render/chrome/opt/google/chrome/chrome"
 
 # Function to initialize Selenium with or without an external proxy
 def init_selenium(use_external_proxy=False):
@@ -37,6 +38,8 @@ def init_selenium(use_external_proxy=False):
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
+
+    chrome_options.binary_location = chrome_binary_location
 
     print(chromedriver_path)
 
