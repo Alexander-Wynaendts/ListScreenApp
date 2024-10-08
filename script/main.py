@@ -7,6 +7,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def main(startup_data):
+
+    print(startup_data.head())
     # Appeler la fonction de data_formatting pour traiter les données
     startup_data = data_formatting(startup_data)
 
@@ -17,8 +19,12 @@ def main(startup_data):
     if not isinstance(startup_data, pd.DataFrame):
         return None  # Return None in case of an error
 
+    print(startup_data.head())
+
     # Perform website screening
     startup_data = parallel_website_screening(startup_data)
+
+    print(startup_data.head())
 
     # Perform website Analysis
     startup_data = parallel_website_analysis(startup_data)
