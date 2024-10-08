@@ -38,35 +38,40 @@ def init_selenium(use_external_proxy=False):
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
-    # Print the actual path that is being used
-    print(f"Attempting to use ChromeDriver at: {chromedriver_path}")
-
-    if not os.path.exists(chromedriver_path):
-        print(f"Error: ChromeDriver not found at {chromedriver_path}")
-        raise FileNotFoundError(f"ChromeDriver not found at {chromedriver_path}")
+     # Check if the ChromeDriver exists and print the result
+    if os.path.exists(chromedriver_path):
+        print(f"ChromeDriver found at: {chromedriver_path}")
     else:
-        print(f"ChromeDriver successfully found at {chromedriver_path}")
+        print(f"Error: ChromeDriver not found at: {chromedriver_path}")
+        return None
 
     # Use the correct ChromeDriver path
     service = Service(executable_path=chromedriver_path)
 
-    if use_external_proxy and proxy and username and password:
-        # Proxy settings with authentication using Selenium Wire
-        proxy_options = {
-            'proxy': {
-                'http': f'http://{username}:{password}@{proxy}',
-                'https': f'https://{username}:{password}@{proxy}',
-                'no_proxy': 'localhost,127.0.0.1',  # Bypass the proxy for local addresses
-                'http2': False  # Disable HTTP/2
+    try:
+        if use_external_proxy and proxy and username and password:
+            # Proxy settings with authentication using Selenium Wire
+            proxy_options = {
+                'proxy': {
+                    'http': f'http://{username}:{password}@{proxy}',
+                    'https': f'https://{username}:{password}@{proxy}',
+                    'no_proxy': 'localhost,127.0.0.1',  # Bypass the proxy for local addresses
+                    'http2': False  # Disable HTTP/2
+                }
             }
-        }
-        # Initialize WebDriver with proxy options
-        driver = webdriver.Chrome(service=service, options=chrome_options, seleniumwire_options=proxy_options)
-    else:
-        # Initialize WebDriver without proxy options
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+            # Initialize WebDriver with proxy options
+            driver = webdriver.Chrome(service=service, options=chrome_options, seleniumwire_options=proxy_options)
+        else:
+            # Initialize WebDriver without proxy options
+            driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    return driver
+        # Print ChromeDriver version to verify it is working
+        print(f"ChromeDriver version: {driver.capabilities['chrome']['chromedriverVersion']}")
+        return driver
+
+    except Exception as e:
+        print(f"Failed to start ChromeDriver: {e}")
+        return None
 
 
 def website_scraping(website_url):
