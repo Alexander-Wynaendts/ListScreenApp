@@ -1,6 +1,4 @@
 import pandas as pd
-import asyncio
-
 from .data_formatting import data_formatting
 from .website_screening import website_sreen_process
 from .website_analysis import website_analysis_process
@@ -18,7 +16,7 @@ async def main(startup_data):
         return None  # Return None in case of an error
 
     # Perform website screening
-    startup_data = await website_sreen_process(startup_data)
+    startup_data = website_sreen_process(startup_data)
 
     print(startup_data.head())
 
