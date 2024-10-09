@@ -1,28 +1,30 @@
-from flask import Flask, render_template, request, send_file, Response
-import subprocess
+from quart import Quart, render_template, request, send_file, Response
 import pandas as pd
 import io
+import asyncio
 from script.main import main
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+async def index():
+    return await render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
-def upload_file():
+async def upload_file():
     try:
-        file = request.files.get('file')
+        # Await to properly handle the file upload in Quart
+        file = (await request.files).get('file')
+
         if not file:
             return "No file uploaded", 400
 
+        # Read the file into a DataFrame
         df = pd.read_csv(file)
 
-        # Call the main processing function
-        startup_data = main(df)
+        # Call the main processing function asynchronously
+        startup_data = await main(df)
 
-        # Log the processed dataframe
         if startup_data is None:
             return "Error processing file", 400
 
@@ -32,20 +34,11 @@ def upload_file():
         output.seek(0)
 
         # Send the file back as a downloadable CSV
-        return send_file(output, mimetype='text/csv', as_attachment=True, download_name='processed_data.csv')
+        return await send_file(output, mimetype='text/csv', as_attachment=True, attachment_filename='processed_data.csv')
 
     except Exception as e:
         print(f"Error occurred: {str(e)}")
         return f"Error processing file: {str(e)}", 500
-
-# Endpoint to get real-time log output
-@app.route('/logs')
-def stream_logs():
-    def generate():
-        with subprocess.Popen(["tail", "-f", "path_to_your_log_file.log"], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
-            for line in iter(p.stdout.readline, b''):
-                yield line.decode('utf-8')
-    return Response(generate(), mimetype='text/plain')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,13 +1,12 @@
 # Flask and server
-flask
+quart
 gunicorn
 
 # Scraping and web automation
 requests
 beautifulsoup4
-selenium-wire
-selenium
-webdriver-manager
+pyppeteer
+uvicorn
 
 # Environment variables
 python-dotenv
