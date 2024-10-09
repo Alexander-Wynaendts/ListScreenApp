@@ -193,22 +193,14 @@ def website_screening(website_url):
     except Exception as e:
         return None, str(e)
 
-def parallel_website_screening(startup_data):
+def website_screen_process(startup_data):
     """
     Running the scraping and GPT screening in parallel on all websites using 5 workers.
     """
-
-    def website_screening_process(website_url):
-        """
-        Screen the website URL using the website_screening function.
-        """
-        result = website_screening(website_url)
-        return result
-
     # Create a ThreadPoolExecutor to parallelize the scraping and screening
     with ThreadPoolExecutor(max_workers=5) as executor:
         # Execute the website screening for all URLs in parallel
-        results = list(executor.map(website_screening_process, startup_data['Website URL']))
+        results = list(executor.map(website_screening, startup_data['Website URL']))
 
     # Convert results into two separate columns
     startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*results)

@@ -1,6 +1,6 @@
 import pandas as pd
 from .data_formatting import data_formatting
-from .website_screening import website_sreen_process
+from .website_screening import website_screen_process
 from .website_analysis import website_analysis_process
 
 import warnings
@@ -16,9 +16,7 @@ async def main(startup_data):
         return None  # Return None in case of an error
 
     # Perform website screening
-    startup_data = website_sreen_process(startup_data)
-
-    print(startup_data.head())
+    startup_data = website_screen_process(startup_data)
 
     # Perform website Analysis
     startup_data = website_analysis_process(startup_data)
