@@ -18,6 +18,7 @@ proxies = {
     'http': f'http://{proxy_auth}',
     'https': f'http://{proxy_auth}'
 }
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -31,7 +32,7 @@ def website_scraping(website_url, use_external_proxy=False):
 
     try:
         # Make the HTML request with proxies
-        response = requests.get(website_url, proxies=proxies, verify=False, timeout=10)
+        response = requests.get(website_url, proxies=proxies, headers=headers, verify=False, timeout=10)
         response.raise_for_status()  # Raise an error for bad status codes
     except requests.exceptions.RequestException as e:
         return f"Failed to scrape the website. Error: {str(e)}"
@@ -76,14 +77,14 @@ def website_links(website_url, use_external_proxy=False):
 
     try:
         # Make the HTML request with proxies
-        response = requests.get(website_url, proxies=proxies, verify=False, timeout=10)
+        response = requests.get(website_url, proxies=proxies, headers=headers, verify=False, timeout=10)
         response.raise_for_status()  # Raise an error for bad status codes
     except requests.exceptions.RequestException as e:
         return f"Failed to scrape the website. Error: {str(e)}"
 
     # Parse the page content
     soup = BeautifulSoup(response.content, 'html.parser')
-    
+
     links = set()
 
     # Extract the page title

@@ -61,9 +61,6 @@ def parallel_website_analysis(startup_data):
     Running the GPT analysis in parallel for filtered SaaS data.
     """
 
-    print(startup_data.head())
-    print(startup_data.dtypes)
-
     def track_progress(website_data, idx):
         """
         Perform GPT analysis with rate limiting and retry mechanism.
