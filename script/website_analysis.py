@@ -1,14 +1,12 @@
 import openai
-
 from concurrent.futures import ThreadPoolExecutor
-
 import time
 import ast
 import re
 import os
 from dotenv import load_dotenv
-
 import warnings
+
 warnings.filterwarnings("ignore")
 
 load_dotenv()
@@ -29,23 +27,19 @@ def gpt_enterprise_analysis(website_data):
     Market Region: <Market region>
     """
 
-    # Call the GPT model
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
     )
 
-    # Retrieve the GPT output
     gpt_analysis = response['choices'][0]['message']['content'].strip()
 
-    # Extract fields using regular expressions
     description_match = re.search(r"Product/Service: (.+?)\n", gpt_analysis)
     industry_match = re.search(r"Industry: (.+?)\n", gpt_analysis)
     client_match = re.search(r"Client Type: (.+?)\n", gpt_analysis)
     revenue_match = re.search(r"Revenue Model: (.+?)\n", gpt_analysis)
     region_match = re.search(r"Market Region: (.+?)(?:\n|$)", gpt_analysis)
 
-    # Store extracted fields into a dictionary
     formated_analysis = {
         "GPT Description": description_match.group(1) if description_match else "N.A.",
         "GPT Industry": industry_match.group(1) if industry_match else "N.A.",
@@ -56,7 +50,7 @@ def gpt_enterprise_analysis(website_data):
 
     return gpt_analysis, formated_analysis
 
-def parallel_website_analysis(startup_data):
+def website_analysis_process(startup_data):
     """
     Running the GPT analysis in parallel for filtered SaaS data.
     """
@@ -70,23 +64,14 @@ def parallel_website_analysis(startup_data):
             return gpt_analysis, formated_analysis
         except openai.error.RateLimitError:
             print(f"Rate limit reached, retrying after 5 seconds...")
-            time.sleep(5)  # Increase delay if rate limits are frequent
+            time.sleep(5)
             return track_progress(website_data, idx)
         except Exception as e:
             print(f"Error on index {idx}: {e}")
-            return None, None  # Handle failure gracefully
+            return None, None
 
-    # Helper function to convert Website Data to dictionary if it's stored as a string
-    def parse_website_data(website_data):
-        if isinstance(website_data, str):
-            try:
-                return ast.literal_eval(website_data)  # Safely parse the string
-            except (ValueError, SyntaxError):
-                return {}  # Return empty dictionary if parsing fails
-        return website_data
-
-    # Apply the parsing function to the 'Website Data' column
-    startup_data['Website Data'] = startup_data['Website Data'].apply(parse_website_data)
+    # Apply the transformation to the 'Website Data' column
+    startup_data['Website Data'] = startup_data['Website Data'].apply(str)
 
     # Iterate over all companies in `startup_data`
     for index, row in startup_data.iterrows():
@@ -100,7 +85,7 @@ def parallel_website_analysis(startup_data):
             startup_data.at[index, 'GPT Region'] = "Not SaaS"
 
         # Case 2: If Website Data length is <= 1000, mark fields as "No Data"
-        elif sum(len(v) for v in row['Website Data'].values()) <= 1000:
+        elif len(row['Website Data']) <= 1000:
             startup_data.at[index, 'GPT Raw Analysis'] = "No Data"
             startup_data.at[index, 'GPT Description'] = "No Data"
             startup_data.at[index, 'GPT Industry'] = "No Data"
@@ -110,7 +95,7 @@ def parallel_website_analysis(startup_data):
 
     # Filter only SaaS companies with sufficient data (Website Data length > 1000)
     saas_data = startup_data[(startup_data['GPT Website Screen'] == "1") &
-                             (startup_data['Website Data'].apply(lambda x: sum(len(v) for v in x.values()) > 1000))]
+                             (startup_data['Website Data'].apply(lambda x: len(x) > 1000))]
 
     # Create a ThreadPoolExecutor to parallelize the GPT analysis
     with ThreadPoolExecutor(max_workers=5) as executor:
@@ -118,7 +103,7 @@ def parallel_website_analysis(startup_data):
 
     # Add GPT analysis to `startup_data` for SaaS companies
     for i, (gpt_analysis, formated_analysis) in enumerate(results):
-        if gpt_analysis and formated_analysis:  # Ensure valid results
+        if gpt_analysis and formated_analysis:
             index = saas_data.index[i]
             startup_data.at[index, 'GPT Raw Analysis'] = gpt_analysis
             startup_data.at[index, 'GPT Description'] = formated_analysis['GPT Description']

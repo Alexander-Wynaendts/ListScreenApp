@@ -1,11 +1,17 @@
 # Flask and server
-flask
+quart
+Werkzeug==2.0.3
 gunicorn
 
 # Scraping and web automation
 requests
 beautifulsoup4
+<<<<<<< HEAD
 scrapingbee
+=======
+pyppeteer
+uvicorn
+>>>>>>> f56857cb1acf8a5a6fabc45e7e6f0ba332ebc826
 
 # Environment variables
 python-dotenv
