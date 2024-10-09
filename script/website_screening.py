@@ -15,7 +15,6 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 scraping_bee_api = os.getenv("SCRAPING_BEE")
 
-
 def website_scraping(website_url):
     """
     Scrapes the content of the given website URL and extracts structured information.
@@ -208,31 +207,8 @@ def parallel_website_screening(startup_data):
 
     # Create a ThreadPoolExecutor to parallelize the scraping and screening
     with ThreadPoolExecutor(max_workers=5) as executor:
-<<<<<<< HEAD
         # Execute the website screening for all URLs in parallel
         results = list(executor.map(website_screening_process, startup_data['Website URL']))
-=======
-        results = list(executor.map(lambda url, idx: track_progress(url, idx), chunk['Website URL'], range(len(chunk))))
-    return results
-
-def website_sreen_process(startup_data):
-    """
-    Running the scraping and GPT screening in parallel in chunks of 25
-    """
-
-    # Split the data into chunks of 25
-    chunks = [startup_data.iloc[i:i + 25] for i in range(0, len(startup_data), 25)]
-    all_results = []
-
-    # Process each chunk, sleep between chunks
-    for idx, chunk in enumerate(chunks):
-        chunk_results = website_process_chunk(chunk, startup_data)
-        all_results.extend(chunk_results)
-
-        # Optional: sleep for a bit between chunks to avoid overloading resources
-        if idx < len(chunks) - 1:
-            time.sleep(60)
->>>>>>> f56857cb1acf8a5a6fabc45e7e6f0ba332ebc826
 
     # Convert results into two separate columns
     startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*results)
