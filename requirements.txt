@@ -1,5 +1,6 @@
 # Flask and server
 quart
+Werkzeug==2.0.3
 gunicorn
 
 # Scraping and web automation
