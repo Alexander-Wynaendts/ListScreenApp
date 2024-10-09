@@ -5,9 +5,7 @@ gunicorn
 # Scraping and web automation
 requests
 beautifulsoup4
-selenium-wire
-selenium
-webdriver-manager
+scrapingbee
 
 # Environment variables
 python-dotenv

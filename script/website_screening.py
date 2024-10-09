@@ -5,8 +5,11 @@ import requests
 import re
 import os
 from dotenv import load_dotenv
-import time
 from concurrent.futures import ThreadPoolExecutor
+import warnings
+warnings.filterwarnings("ignore")
+
+from scrapingbee import ScrapingBeeClient
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -19,20 +22,17 @@ proxies = {
     'https': f'http://{proxy_auth}'
 }
 
-import warnings
-warnings.filterwarnings("ignore")
-
-def website_scraping(website_url, use_external_proxy=False):
+def website_scraping(website_url):
     """
     Scrapes the content of the given website URL and extracts structured information.
     """
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']  # Tags we want to extract
     structured_text = []
 
+    client = ScrapingBeeClient(api_key='04S5AN57ZPX4ZMK093M1W3GYBNSGTR07YDLEDT4IUU6GFRK0DX85NNR2VIB6HD9L0V4ICM18MK1NZCT8')
+
     try:
-        # Make the HTML request with proxies
-        response = requests.get(website_url, proxies=proxies, verify=False, timeout=10)
-        response.raise_for_status()  # Raise an error for bad status codes
+        response = client.get(website_url)
     except requests.exceptions.RequestException as e:
         return f"Failed to scrape the website. Error: {str(e)}"
 
@@ -67,23 +67,23 @@ def website_scraping(website_url, use_external_proxy=False):
 
     return "\n".join(structured_text)
 
-def website_links(website_url, use_external_proxy=False):
+def website_links(website_url):
     """
     Scrapes the content of the given website URL and extracts structured information.
     """
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']  # Tags to extract
     structured_text = []
 
+    client = ScrapingBeeClient(api_key='04S5AN57ZPX4ZMK093M1W3GYBNSGTR07YDLEDT4IUU6GFRK0DX85NNR2VIB6HD9L0V4ICM18MK1NZCT8')
+
     try:
-        # Make the HTML request with proxies
-        response = requests.get(website_url, proxies=proxies, verify=False, timeout=10)
-        response.raise_for_status()  # Raise an error for bad status codes
+        response = client.get(website_url)
     except requests.exceptions.RequestException as e:
         return f"Failed to scrape the website. Error: {str(e)}"
 
     # Parse the page content
     soup = BeautifulSoup(response.content, 'html.parser')
-    
+
     links = set()
 
     # Extract the page title
@@ -200,38 +200,24 @@ def website_screening(website_url):
     except Exception as e:
         return None, str(e)
 
-def website_process_chunk(chunk, startup_data):
+def parallel_website_screening(startup_data):
     """
-    Process a chunk of 30 website URLs in parallel
+    Running the scraping and GPT screening in parallel on all websites using 5 workers.
     """
-    def track_progress(website_url, idx):
+
+    def website_screening_process(website_url):
+        """
+        Screen the website URL using the website_screening function.
+        """
         result = website_screening(website_url)
         return result
 
     # Create a ThreadPoolExecutor to parallelize the scraping and screening
     with ThreadPoolExecutor(max_workers=5) as executor:
-        results = list(executor.map(lambda url, idx: track_progress(url, idx), chunk['Website URL'], range(len(chunk))))
-    return results
-
-def parallel_website_screening(startup_data):
-    """
-    Running the scraping and GPT screening in parallel in chunks of 25
-    """
-
-    # Split the data into chunks of 25
-    chunks = [startup_data.iloc[i:i + 25] for i in range(0, len(startup_data), 25)]
-    all_results = []
-
-    # Process each chunk, sleep between chunks
-    for idx, chunk in enumerate(chunks):
-        chunk_results = website_process_chunk(chunk, startup_data)
-        all_results.extend(chunk_results)
-
-        # Optional: sleep for a bit between chunks to avoid overloading resources
-        if idx < len(chunks) - 1:
-            time.sleep(60)
+        # Execute the website screening for all URLs in parallel
+        results = list(executor.map(website_screening_process, startup_data['Website URL']))
 
     # Convert results into two separate columns
-    startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*all_results)
+    startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*results)
 
     return startup_data
