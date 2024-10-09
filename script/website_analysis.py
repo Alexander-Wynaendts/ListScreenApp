@@ -3,6 +3,7 @@ import openai
 from concurrent.futures import ThreadPoolExecutor
 
 import time
+import ast
 import re
 import os
 from dotenv import load_dotenv
@@ -60,6 +61,9 @@ def parallel_website_analysis(startup_data):
     Running the GPT analysis in parallel for filtered SaaS data.
     """
 
+    print(startup_data.head())
+    print(startup_data.dtypes)
+
     def track_progress(website_data, idx):
         """
         Perform GPT analysis with rate limiting and retry mechanism.
@@ -74,6 +78,18 @@ def parallel_website_analysis(startup_data):
         except Exception as e:
             print(f"Error on index {idx}: {e}")
             return None, None  # Handle failure gracefully
+
+    # Helper function to convert Website Data to dictionary if it's stored as a string
+    def parse_website_data(website_data):
+        if isinstance(website_data, str):
+            try:
+                return ast.literal_eval(website_data)  # Safely parse the string
+            except (ValueError, SyntaxError):
+                return {}  # Return empty dictionary if parsing fails
+        return website_data
+
+    # Apply the parsing function to the 'Website Data' column
+    startup_data['Website Data'] = startup_data['Website Data'].apply(parse_website_data)
 
     # Iterate over all companies in `startup_data`
     for index, row in startup_data.iterrows():

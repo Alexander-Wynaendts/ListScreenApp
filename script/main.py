@@ -18,12 +18,8 @@ def main(startup_data):
     # Perform website screening
     startup_data = parallel_website_screening(startup_data)
 
-    print(startup_data["Website Data"][0])
-
     # Perform website Analysis
     startup_data = parallel_website_analysis(startup_data)
-
-    print(startup_data["Website Data"][0])
 
     # Return the final processed DataFrame
     return startup_data
