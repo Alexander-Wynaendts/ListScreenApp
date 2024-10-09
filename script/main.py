@@ -6,7 +6,7 @@ from .website_analysis import website_analysis_process
 import warnings
 warnings.filterwarnings("ignore")
 
-async def main(startup_data):
+def main(startup_data):
 
     # Appeler la fonction de data_formatting pour traiter les données
     startup_data = data_formatting(startup_data)
