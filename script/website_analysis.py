@@ -20,11 +20,11 @@ def gpt_enterprise_analysis(website_data):
 
     Analyze the content and return the following details in the exact format specified:
 
-    Product/Service: <One-sentence description of the company’s main product or service>
-    Industry: <Industry>
+    Product/Service: <Short, straightforward description of the company’s main product or service, e.g., "Automated quality control inspection for fresh produce to reduce waste.">
+    Industry: <Simplified industry classification, e.g., "E-commerce," "EdTech," "Fashion.">
     Client Type: <B2B or B2C>
-    Revenue Model: <Revenue model>
-    Market Region: <Market region>
+    Revenue Model: <Short description of revenue model, e.g., "subscription," "transaction fee," "commission.">
+    Market Region: <Specify region or use "Global" if unspecified.>
     """
 
     response = openai.ChatCompletion.create(
