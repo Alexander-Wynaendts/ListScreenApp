@@ -32,7 +32,7 @@ def upload_file():
         output.seek(0)
 
         # Send the file back as a downloadable CSV
-        return send_file(output, mimetype='text/csv', as_attachment=True, download_name='processed_data.csv')
+        return send_file(output, mimetype='text/csv', as_attachment=True, download_name='affinity_import.csv')
 
     except Exception as e:
         print(f"Error occurred: {str(e)}")
