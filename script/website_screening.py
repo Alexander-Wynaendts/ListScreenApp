@@ -183,7 +183,7 @@ def website_screening(website_url):
             link_content = website_scraping(selected_link)
             website_data[selected_link] = link_content
 
-        if sum(len(value) for value in website_data.values()) < 1000:
+        if sum(len(value) for value in website_data.values()) < 300:
             return "1", website_data
 
         # Step 4: Perform final GPT screening (or processing)
