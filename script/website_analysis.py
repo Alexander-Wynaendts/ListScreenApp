@@ -84,14 +84,14 @@ def website_analysis_process(startup_data):
             startup_data.at[index, 'GPT Revenue Model'] = "Not SaaS"
             startup_data.at[index, 'GPT Region'] = "Not SaaS"
 
-        # Case 2: If Website Data length is <= 1000, mark fields as "No Data"
+        # Case 2: If Website Data length is <= 1000, mark fields as "-"
         elif len(row['Website Data']) <= 1000:
-            startup_data.at[index, 'GPT Raw Analysis'] = "No Data"
-            startup_data.at[index, 'GPT Description'] = "No Data"
-            startup_data.at[index, 'GPT Industry'] = "No Data"
-            startup_data.at[index, 'GPT Client Type'] = "No Data"
-            startup_data.at[index, 'GPT Revenue Model'] = "No Data"
-            startup_data.at[index, 'GPT Region'] = "No Data"
+            startup_data.at[index, 'GPT Raw Analysis'] = "-"
+            startup_data.at[index, 'GPT Description'] = "-"
+            startup_data.at[index, 'GPT Industry'] = "-"
+            startup_data.at[index, 'GPT Client Type'] = "-"
+            startup_data.at[index, 'GPT Revenue Model'] = "-"
+            startup_data.at[index, 'GPT Region'] = "-"
 
     # Filter only SaaS companies with sufficient data (Website Data length > 1000)
     saas_data = startup_data[(startup_data['GPT Website Screen'] == "1") &
