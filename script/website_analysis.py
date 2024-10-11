@@ -23,8 +23,8 @@ def gpt_enterprise_analysis(website_data):
     Product/Service: <Short, straightforward description of the company’s main product or service, e.g., "Automated quality control inspection for fresh produce to reduce waste.">
     Industry: <Simplified industry classification, e.g., "E-commerce," "EdTech," "Fashion.">
     Client Type: <B2B or B2C>
-    Revenue Model: <Short description of revenue model, e.g., "subscription," "transaction fee," "commission.">
-    Market Region: <Specify region or use "Global" if unspecified.>
+    Revenue Model: <Use only one or two words like "subscription," "transaction fee," or "commission.">
+    Market Region: <Return only "Global" or a specific country, continent, or region, e.g., "Global," "Europe," "USA.">
     """
 
     response = openai.ChatCompletion.create(
@@ -40,12 +40,17 @@ def gpt_enterprise_analysis(website_data):
     revenue_match = re.search(r"Revenue Model: (.+?)\n", gpt_analysis)
     region_match = re.search(r"Market Region: (.+?)(?:\n|$)", gpt_analysis)
 
+    # Check if 'Global' is in the region and replace it with "-"
+    region = region_match.group(1) if region_match else "N.A."
+    if "Global" in region:
+        region = "-"
+
     formated_analysis = {
         "GPT Description": description_match.group(1) if description_match else "N.A.",
         "GPT Industry": industry_match.group(1) if industry_match else "N.A.",
         "GPT Client Type": client_match.group(1) if client_match else "N.A.",
         "GPT Revenue Model": revenue_match.group(1) if revenue_match else "N.A.",
-        "GPT Region": region_match.group(1) if region_match else "N.A.",
+        "GPT Region": region,
     }
 
     return gpt_analysis, formated_analysis
