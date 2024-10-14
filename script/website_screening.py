@@ -167,7 +167,7 @@ def gpt_software_hardware_screen(website_data):
     gpt_analysis = response['choices'][0]['message']['content'].strip()
     gpt_answer = [char for char in gpt_analysis if char.isdigit()][-1]
 
-    return gpt_answer, gpt_analysis
+    return gpt_answer
 
 def gpt_software_service_screen(website_data):
     """
@@ -192,7 +192,7 @@ def gpt_software_service_screen(website_data):
     gpt_analysis = response['choices'][0]['message']['content'].strip()
     gpt_answer = [char for char in gpt_analysis if char.isdigit()][-1]
 
-    return gpt_answer, gpt_analysis
+    return gpt_answer
 
 def website_screening(website_url):
     try:
@@ -208,19 +208,20 @@ def website_screening(website_url):
             link_content = website_scraping(selected_link)
             website_data[selected_link] = link_content
 
-        if sum(len(value) for value in website_data.values()) < 300:
-            return "1", "1", website_data
+        if sum(len(value) for value in website_data.values()) < 500:
+            return "1", website_data
 
         # Step 4: Perform the first GPT screening (SaaS vs Hardware)
-        saas_hardware_screen, gpt_analysis_1 = gpt_software_hardware_screen(website_data)
+        gpt_answer = gpt_software_hardware_screen(website_data)
 
-        # Step 5: Perform the second GPT screening (Software vs Service)
-        software_service_screen, gpt_analysis_2 = gpt_software_service_screen(website_data)
+        if gpt_answer == "1":
+            # Step 5: Perform the second GPT screening (Software vs Service)
+            gpt_answer = gpt_software_service_screen(website_data)
 
-        return saas_hardware_screen, software_service_screen, website_data
+        return gpt_answer, website_data
 
     except Exception as e:
-        return None, None, str(e)
+        return None, str(e)
 
 def website_screen_process(startup_data):
     """
