@@ -82,15 +82,23 @@ def website_analysis_process(startup_data):
     for index, row in startup_data.iterrows():
         # Case 1: If 'GPT Website Screen' is 0, mark fields as "Not SaaS"
         if row['GPT Website Screen'] == "0":
-            startup_data.at[index, 'GPT Raw Analysis'] = "Not SaaS"
-            startup_data.at[index, 'GPT Description'] = "Not SaaS"
-            startup_data.at[index, 'GPT Industry'] = "Not SaaS"
-            startup_data.at[index, 'GPT Client Type'] = "Not SaaS"
-            startup_data.at[index, 'GPT Revenue Model'] = "Not SaaS"
-            startup_data.at[index, 'GPT Region'] = "Not SaaS"
+            startup_data.at[index, 'GPT Raw Analysis'] = "Hardware"
+            startup_data.at[index, 'GPT Description'] = "Hardware"
+            startup_data.at[index, 'GPT Industry'] = "Hardware"
+            startup_data.at[index, 'GPT Client Type'] = "Hardware"
+            startup_data.at[index, 'GPT Revenue Model'] = "Hardware"
+            startup_data.at[index, 'GPT Region'] = "Hardware"
 
-        # Case 2: If Website Data length is <= 1000, mark fields as "-"
-        elif len(row['Website Data']) <= 1000:
+        elif row['GPT Website Screen'] == "2":
+            startup_data.at[index, 'GPT Raw Analysis'] = "Service"
+            startup_data.at[index, 'GPT Description'] = "Service"
+            startup_data.at[index, 'GPT Industry'] = "Service"
+            startup_data.at[index, 'GPT Client Type'] = "Service"
+            startup_data.at[index, 'GPT Revenue Model'] = "Service"
+            startup_data.at[index, 'GPT Region'] = "Service"
+
+        # Case 2: If Website Data length is <= 500, mark fields as "-"
+        elif len(row['Website Data']) <= 500:
             startup_data.at[index, 'GPT Raw Analysis'] = "-"
             startup_data.at[index, 'GPT Description'] = "-"
             startup_data.at[index, 'GPT Industry'] = "-"
@@ -98,9 +106,9 @@ def website_analysis_process(startup_data):
             startup_data.at[index, 'GPT Revenue Model'] = "-"
             startup_data.at[index, 'GPT Region'] = "-"
 
-    # Filter only SaaS companies with sufficient data (Website Data length > 1000)
+    # Filter only SaaS companies with sufficient data (Website Data length > 500)
     saas_data = startup_data[(startup_data['GPT Website Screen'] == "1") &
-                             (startup_data['Website Data'].apply(lambda x: len(x) > 1000))]
+                             (startup_data['Website Data'].apply(lambda x: len(x) > 500))]
 
     # Create a ThreadPoolExecutor to parallelize the GPT analysis
     with ThreadPoolExecutor(max_workers=5) as executor:

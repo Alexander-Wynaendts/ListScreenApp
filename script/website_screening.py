@@ -147,7 +147,7 @@ def gpt_link_selection(website_links):
     # Return the top 2 links
     return links[:2]
 
-def gpt_website_screen(website_data):
+def gpt_software_hardware_screen(website_data):
     prompt = f"""
     You are an expert in classifying companies product/service as "Software" or "Hardware" based on the following dictionary of website links and their corresponding content.
     The dictionary following dictionnary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily a Software or Hardware company.
@@ -157,6 +157,31 @@ def gpt_website_screen(website_data):
     Give a binary output:
     - "1" for a Software company
     - "0" for a Hardware company
+    """
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    gpt_analysis = response['choices'][0]['message']['content'].strip()
+    gpt_answer = [char for char in gpt_analysis if char.isdigit()][-1]
+
+    return gpt_answer, gpt_analysis
+
+def gpt_software_service_screen(website_data):
+    """
+    GPT prompt to classify if the company is primarily providing Software or Service.
+    """
+    prompt = f"""
+    You are an expert in classifying companies as "Software" or "Service" based on the following dictionary of website links and their corresponding content.
+    The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily offering a Software or Service.
+
+    {website_data}
+
+    Give a binary output:
+    - "1" for Software
+    - "2" for Service
     """
 
     response = openai.ChatCompletion.create(
@@ -184,14 +209,18 @@ def website_screening(website_url):
             website_data[selected_link] = link_content
 
         if sum(len(value) for value in website_data.values()) < 300:
-            return "1", website_data
+            return "1", "1", website_data
 
-        # Step 4: Perform final GPT screening (or processing)
-        website_screen, gpt_analysis = gpt_website_screen(website_data)
-        return website_screen, website_data
+        # Step 4: Perform the first GPT screening (SaaS vs Hardware)
+        saas_hardware_screen, gpt_analysis_1 = gpt_software_hardware_screen(website_data)
+
+        # Step 5: Perform the second GPT screening (Software vs Service)
+        software_service_screen, gpt_analysis_2 = gpt_software_service_screen(website_data)
+
+        return saas_hardware_screen, software_service_screen, website_data
 
     except Exception as e:
-        return None, str(e)
+        return None, None, str(e)
 
 def website_screen_process(startup_data):
     """
