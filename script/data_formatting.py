@@ -19,7 +19,7 @@ def check_csv_format(startup_data):
         return None  # Return None to indicate failure
 
     # Return DataFrame with only required columns
-    return startup_data[required_columns]
+    return startup_data
 
 def update_missing_urls(startup_data):
     """

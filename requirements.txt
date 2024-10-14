@@ -2,6 +2,7 @@
 Flask
 Werkzeug==2.0.3
 gunicorn
+flask-socketio
 
 # Scraping and web automation
 requests
