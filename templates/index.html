@@ -51,16 +51,42 @@
         #confetti-message::before {
             background-position: top;
         }
+        .info-box {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .info-box h5 {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center mb-4">Entourage: List Screening</h1>
 
+        <!-- Information section about the program -->
+        <div class="info-box">
+            <h5>About the Program</h5>
+            <p>This tool analyzes companies based on their website using natural language processing to classify them as either <strong>SaaS</strong>, <strong>Service</strong>, or <strong>Hardware</strong>.</p>
+            <p>For SaaS companies, the tool will provide:</p>
+            <ul>
+                <li>A one-sentence description</li>
+                <li>Client type (B2B or B2C)</li>
+                <li>Industry</li>
+                <li>Revenue model</li>
+                <li>Region of activity</li>
+            </ul>
+            <p><strong>Important:</strong> You must provide a .csv file containing at least two columns: <u>"Name"</u> and <u>"Website URL"</u>. The "Website URL"</u> column should contain valid URLs without any empty values. If these conditions are not met, the program will return the message: <em>"An error occurred while processing the CSV file."</em></p>
+            <p>The CSV file name will be used as a tag in Affinity, so please provide a <u>meaningful file name</u>.</p>
+            <p><strong>Note:</strong> <em>The program runs live but can only process the same file for up to 1 hour. It cannot process more than 1,000 companies in one go. If your file exceeds this limit, please split it into smaller batches.</em></p>
+        </div>
+        <p></p>
         <!-- Form to upload the CSV -->
         <form id="upload-form" method="POST" action="/upload" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="formFile" class="form-label">Upload CSV File</label>
+                <label for="formFile" class="form-label">Upload your .csv File</label>
                 <input class="form-control" type="file" name="file" id="formFile" accept=".csv" required>
             </div>
             <button type="submit" class="btn btn-primary w-100">Run Script</button>

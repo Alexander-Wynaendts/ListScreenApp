@@ -10,12 +10,6 @@ warnings.filterwarnings("ignore")
 
 def main(startup_data):
 
-    print("="*60)
-    print("⚠️ WARNING: Process will shut down after 1h!")
-    print("If there more than **1000** companies")
-    print("please contact the developer immediately to resolve the issue.")
-    print("="*60)
-
     # Record the start time
     start_time = time.time()
 

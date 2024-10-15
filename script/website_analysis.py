@@ -126,11 +126,9 @@ def website_analysis_process(startup_data):
             startup_data.at[index, 'GPT Region'] = formated_analysis['GPT Region']
 
     # Drop unnecessary columns and save final version
-    startup_data = startup_data.drop(columns=['GPT Website Screen', 'GPT Raw Analysis'])
+    startup_data = startup_data.drop(columns=['GPT Website Screen', 'GPT Raw Analysis', 'EntityNumber', 'CBE Info'])
     # Rename columns as specified
     startup_data = startup_data.rename(columns={
-        'EntityNumber': 'Enterprise Number',
-        'CBE Info': 'CBE page',
         'Founders Name': 'Legal Owners',
         'Founding Year': 'CBE Year Founded',
         'LinkedIn URL': 'GPT LinkedIn URL'
