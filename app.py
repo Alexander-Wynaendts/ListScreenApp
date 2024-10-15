@@ -28,8 +28,8 @@ def upload_file():
             return "Error processing file", 400
 
         # Add the "Tags" column with the file name
-        file_name = file.filename
-        startup_data["Tags"] = file_name
+        file_name = file.filename.replace('.csv', '')
+        startup_data["Tag"] = file_name
 
         # Convert the processed DataFrame to CSV in-memory using UTF-8 encoding
         output = io.BytesIO()
