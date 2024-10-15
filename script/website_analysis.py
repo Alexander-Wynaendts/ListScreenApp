@@ -1,7 +1,7 @@
 import openai
 from concurrent.futures import ThreadPoolExecutor
 import time
-import ast
+import numpy as np
 import re
 import os
 from dotenv import load_dotenv
@@ -136,6 +136,8 @@ def website_analysis_process(startup_data):
         'LinkedIn URL': 'GPT LinkedIn URL'
     })
 
-    startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(lambda founders: " ".join([founder['LinkedIn URL'] for founder in founders if isinstance(founders, list) and 'LinkedIn URL' in founder]) if isinstance(founders, list) else "-")
-
+    startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(
+    lambda text: " ".join(re.findall(r"'LinkedIn URL': '([^']*)'", text))
+    if isinstance(text, str) else np.nan
+)
     return startup_data

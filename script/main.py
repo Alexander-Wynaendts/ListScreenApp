@@ -11,8 +11,8 @@ warnings.filterwarnings("ignore")
 def main(startup_data):
 
     print("="*60)
-    print("⚠️ WARNING: Process will shut down after 4 hours!")
-    print("If you see more than 'Nace Code Filter: **5000**' messages,")
+    print("⚠️ WARNING: Process will shut down after 1h!")
+    print("If there more than **1000** companies")
     print("please contact the developer immediately to resolve the issue.")
     print("="*60)
 
@@ -21,6 +21,8 @@ def main(startup_data):
 
     # Appeler la fonction de data_formatting pour traiter les données
     startup_data = data_formatting(startup_data)
+
+    print(f"The process will analyse: {len(startup_data)} companies")
 
     # Check if the processed data is a DataFrame
     if not isinstance(startup_data, pd.DataFrame):
@@ -31,6 +33,8 @@ def main(startup_data):
 
     # Perform website Analysis
     startup_data = website_analysis_process(startup_data)
+
+    print(f"All companies where screen and analysed successfully")
 
     # Record the end time and calculate the elapsed time
     end_time = time.time()

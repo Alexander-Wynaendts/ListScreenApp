@@ -228,11 +228,16 @@ def website_screen_process(startup_data):
     Running the scraping and GPT screening in parallel on all websites using 5 workers.
     """
     # Create a ThreadPoolExecutor to parallelize the scraping and screening
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        # Execute the website screening for all URLs in parallel
-        results = list(executor.map(website_screening, startup_data['Website URL']))
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        # List to store all results
+        all_results = []
+
+        # Execute the website screening for all URLs in parallel with progress display
+        for idx, result in enumerate(executor.map(website_screening, startup_data['Website URL'])):
+            all_results.append(result)
+            print(f"Progress: {idx + 1}/{len(startup_data)}")  # Display progress
 
     # Convert results into two separate columns
-    startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*results)
+    startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*all_results)
 
     return startup_data
