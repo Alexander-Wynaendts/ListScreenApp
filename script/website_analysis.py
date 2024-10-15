@@ -136,6 +136,6 @@ def website_analysis_process(startup_data):
         'LinkedIn URL': 'GPT LinkedIn URL'
     })
 
-    startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(lambda founders: " ".join([founder['LinkedIn URL'] for founder in founders if 'LinkedIn URL' in founder]))
+    startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(lambda founders: " ".join([founder['LinkedIn URL'] for founder in founders if isinstance(founders, list) and 'LinkedIn URL' in founder]) if isinstance(founders, list) else "-")
 
     return startup_data
