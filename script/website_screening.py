@@ -15,22 +15,42 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 scraping_bee_api = os.getenv("SCRAPING_BEE")
 
+from time import sleep
+from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
+from scrapingbee import ScrapingBeeClient
+
 def website_scraping(website_url):
     """
     Scrapes the content of the given website URL and extracts structured information.
+    Retries once after 5 seconds if the title is missing.
     """
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']  # Tags we want to extract
     structured_text = []
 
     client = ScrapingBeeClient(api_key=scraping_bee_api)
-    print(website_url)
-    try:
-        response = client.get(website_url)
-    except requests.exceptions.RequestException as e:
-        return f"Failed to scrape the website. Error: {str(e)}"
 
-    # Parse the page content
-    soup = BeautifulSoup(response.content, 'html.parser')
+    def scrape_page():
+        try:
+            response = client.get(website_url)
+        except requests.exceptions.RequestException as e:
+            return None, f"Failed to scrape the website. Error: {str(e)}"
+
+        # Parse the page content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        return soup, None
+
+    # First attempt to scrape
+    soup, error = scrape_page()
+
+    # If the title is missing, retry after 5 seconds
+    if soup.title is None:
+        print(f"Title missing, retrying in 5 seconds...")
+        sleep(5)
+        soup, error = scrape_page()
+
+    if error:
+        return "No Title"
 
     # Extract the page title
     page_title = soup.title.get_text(strip=True) if soup.title else "No Title"
@@ -63,21 +83,35 @@ def website_scraping(website_url):
 def website_links(website_url):
     """
     Scrapes the content of the given website URL and extracts structured information.
+    Retries once after 5 seconds if the title is missing.
     """
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']  # Tags to extract
     structured_text = []
 
     client = ScrapingBeeClient(api_key=scraping_bee_api)
-
-    try:
-        response = client.get(website_url)
-    except requests.exceptions.RequestException as e:
-        return f"Failed to scrape the website. Error: {str(e)}"
-
-    # Parse the page content
-    soup = BeautifulSoup(response.content, 'html.parser')
-
     links = set()
+
+    def scrape_page():
+        try:
+            response = client.get(website_url)
+        except requests.exceptions.RequestException as e:
+            return None, f"Failed to scrape the website. Error: {str(e)}"
+
+        # Parse the page content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        return soup, None
+
+    # First attempt to scrape
+    soup, error = scrape_page()
+
+    # If the title is missing, retry after 5 seconds
+    if soup.title is None:
+        print(f"Title missing, retrying in 5 seconds...")
+        sleep(5)
+        soup, error = scrape_page()
+
+    if error:
+        return "No Title"
 
     # Extract the page title
     page_title = soup.title.get_text(strip=True) if soup.title else "No Title"
