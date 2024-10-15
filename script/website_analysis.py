@@ -125,17 +125,22 @@ def website_analysis_process(startup_data):
             startup_data.at[index, 'GPT Revenue Model'] = formated_analysis['GPT Revenue Model']
             startup_data.at[index, 'GPT Region'] = formated_analysis['GPT Region']
 
-    # Drop unnecessary columns and save final version
-    startup_data = startup_data.drop(columns=['GPT Website Screen', 'GPT Raw Analysis', 'EntityNumber', 'CBE Info'])
-    # Rename columns as specified
-    startup_data = startup_data.rename(columns={
+    # Drop unnecessary columns if they exist in the DataFrame
+    columns_to_drop = ['GPT Website Screen', 'GPT Raw Analysis', 'EntityNumber', 'CBE Info']
+    startup_data = startup_data.drop(columns=[col for col in columns_to_drop if col in startup_data.columns])
+
+    # Rename columns if they exist in the DataFrame
+    columns_to_rename = {
         'Founders Name': 'Legal Owners',
         'Founding Year': 'CBE Year Founded',
         'LinkedIn URL': 'GPT LinkedIn URL'
-    })
+    }
+    startup_data = startup_data.rename(columns={old: new for old, new in columns_to_rename.items() if old in startup_data.columns})
 
-    startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(
-    lambda text: " ".join(re.findall(r"'LinkedIn URL': '([^']*)'", text))
-    if isinstance(text, str) else np.nan
-)
+    # Extract LinkedIn URLs from the 'LinkedIn Founder' column if it exists
+    if 'LinkedIn Founder' in startup_data.columns:
+        startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(
+            lambda text: " ".join(re.findall(r"'LinkedIn URL': '([^']*)'", text))
+            if isinstance(text, str) else np.nan
+        )
     return startup_data
