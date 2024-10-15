@@ -127,5 +127,15 @@ def website_analysis_process(startup_data):
 
     # Drop unnecessary columns and save final version
     startup_data = startup_data.drop(columns=['GPT Website Screen', 'GPT Raw Analysis'])
+    # Rename columns as specified
+    startup_data = startup_data.rename(columns={
+        'EntityNumber': 'Enterprise Number',
+        'CBE Info': 'CBE page',
+        'Founders Name': 'Legal Owners',
+        'Founding Year': 'CBE Year Founded',
+        'LinkedIn URL': 'GPT LinkedIn URL'
+    })
+
+    startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(lambda founders: " ".join([founder['LinkedIn URL'] for founder in founders if 'LinkedIn URL' in founder]))
 
     return startup_data

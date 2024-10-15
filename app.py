@@ -17,14 +17,19 @@ def upload_file():
         if not file:
             return "No file uploaded", 400
 
+        # Read the file into a DataFrame
         df = pd.read_csv(file)
 
         # Call the main processing function
         startup_data = main(df)
 
-        # Log the processed dataframe
+        # Check if the processing returned data
         if startup_data is None:
             return "Error processing file", 400
+
+        # Add the "Tags" column with the file name
+        file_name = file.filename
+        startup_data["Tags"] = file_name
 
         # Convert the processed DataFrame to CSV in-memory using UTF-8 encoding
         output = io.BytesIO()
