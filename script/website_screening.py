@@ -23,7 +23,7 @@ def website_scraping(website_url):
     structured_text = []
 
     client = ScrapingBeeClient(api_key=scraping_bee_api)
-
+    print(website_url)
     try:
         response = client.get(website_url)
     except requests.exceptions.RequestException as e:
@@ -228,7 +228,7 @@ def website_screen_process(startup_data):
     Running the scraping and GPT screening in parallel on all websites using 5 workers.
     """
     # Create a ThreadPoolExecutor to parallelize the scraping and screening
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         # List to store all results
         all_results = []
 
