@@ -27,6 +27,7 @@ def main(startup_data):
 
     # Perform website Analysis
     startup_data = website_analysis_process(startup_data)
+    startup_data['Status'] = "To Screen"
 
     print(f"All companies where screen and analysed successfully")
 
