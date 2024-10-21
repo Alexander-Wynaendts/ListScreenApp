@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, Response
+from flask import Flask, render_template, request, jsonify
 import subprocess
 import pandas as pd
 import io
@@ -12,45 +12,40 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    try:
-        file = request.files.get('file')
-        if not file:
-            return "No file uploaded", 400
+    file = request.files.get('file')
+    if not file:
+        return "No file uploaded", 400
 
-        # Read the file into a DataFrame
-        df = pd.read_csv(file)
+    # Read the file into a DataFrame
+    df = pd.read_csv(file)
 
-        # Call the main processing function
-        startup_data = main(df)
+    # Call the main processing function
+    startup_data = main(df)
 
-        # Check if the processing returned data
-        if startup_data is None:
-            return "Error processing file", 400
+    # Check if the processing returned data
+    if startup_data is None:
+        return "Error processing file", 40
 
-        # Add the "Tags" column with the file name
-        file_name = file.filename.replace('.csv', '')
-        startup_data["Tag"] = file_name
+    # Send the file back as a downloadable CSV
+    return "Affinity Updated"
 
-        # Convert the processed DataFrame to CSV in-memory using UTF-8 encoding
-        output = io.BytesIO()
-        startup_data.to_csv(output, index=False, encoding='utf-8')
-        output.seek(0)
+# Webhook route
+@app.route('/affinity-webhook', methods=['POST'])
+def affinity_webhook():
+    if request.method == 'POST':
+        # Process webhook data from Affinity
+        data = request.json
+        print("Received webhook:", data)
 
-        # Send the file back as a downloadable CSV
-        return send_file(output, mimetype='text/csv', as_attachment=True, download_name='affinity_import.csv')
+        # Trigger the Python script
+        try:
+            # Call the main.py script
+            result = subprocess.run(['python3', '/mnt/data/main.py'], capture_output=True, text=True)
+            return jsonify({"status": "Script executed", "output": result.stdout}), 200
+        except Exception as e:
+            return jsonify({"status": "Error", "message": str(e)}), 500
 
-    except Exception as e:
-        print(f"Error occurred: {str(e)}")
-        return f"Error processing file: {str(e)}", 500
-
-# Endpoint to get real-time log output
-@app.route('/logs')
-def stream_logs():
-    def generate():
-        with subprocess.Popen(["tail", "-f", "path_to_your_log_file.log"], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
-            for line in iter(p.stdout.readline, b''):
-                yield line.decode('utf-8')
-    return Response(generate(), mimetype='text/plain')
+    return jsonify({"status": "Invalid request"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

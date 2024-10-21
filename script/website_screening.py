@@ -45,7 +45,7 @@ def website_scraping(website_url):
 
     # If the title is missing, retry after 5 seconds
     if soup.title is None:
-        print(f"Title missing, retrying in 5 seconds...")
+        print(f"Title missing for {website_url}, retrying in 5 seconds...")
         sleep(5)
         soup, error = scrape_page()
 
