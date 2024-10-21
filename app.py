@@ -33,19 +33,23 @@ def upload_file():
 @app.route('/affinity-webhook', methods=['POST'])
 def affinity_webhook():
     if request.method == 'POST':
-        # Process webhook data from Affinity
         data = request.json
         print("Received webhook:", data)
 
-        # Trigger the Python script
-        try:
-            # Call the main.py script
-            result = subprocess.run(['python3', '/mnt/data/main.py'], capture_output=True, text=True)
-            return jsonify({"status": "Script executed", "output": result.stdout}), 200
-        except Exception as e:
-            return jsonify({"status": "Error", "message": str(e)}), 500
+        # Check if the event type is 'list_entry.created'
+        if data.get('type') == 'list_entry.created':
+            # Extract relevant information from the event
+            entity = data.get('body', {}).get('entity', {})
+            name = entity.get('name', '')
+            website_url = entity.get('domain', '')  # Adjust as per data source if website URL is different
 
-    return jsonify({"status": "Invalid request"}), 400
+            # Store it in a DataFrame
+            df = pd.DataFrame([{'Name': name, 'Website URL': website_url}])
+
+            print(df)
+
+        # Send the file back as a downloadable CSV
+        return "Affinity Updated"
 
 if __name__ == '__main__':
     app.run(debug=True)
