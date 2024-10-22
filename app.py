@@ -49,12 +49,16 @@ def gmail_webhook():
     if request.method == 'POST':
         data = request.json
 
+        print(data)
+
         sender = data.get('from', '')
         subject = data.get('subject', '')
         plain_body = data.get('plainBody', '')
         html_body = data.get('htmlBody', '')
 
         email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
+
+        print(email_info)
 
         company_info = gmail_inbound(email_info)
 
@@ -72,6 +76,9 @@ def formulair_webhook():
 
         # Initialize a dictionary to store extracted information
         formulair_info = {}
+
+        print(data)
+        print(fields)
 
         # Loop through each field and extract key information
         for field in fields:
