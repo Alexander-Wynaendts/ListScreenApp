@@ -37,7 +37,8 @@ def affinity_webhook():
             if field_name == 'Status' and field_value == 'To be contacted':
                 outreach_export(company_info)
 
-        import_affinity(company_screened)
+        print(f"New company to process: {company_screened}")
+        #import_affinity(company_screened)
 
         return "Affinity webhook received and processed", 200
 
@@ -46,6 +47,7 @@ def affinity_webhook():
     if request.method == 'POST':
         data = request.json
 
+        print(f"New email: {data}")
 
     return "Gmail webhook received and processed", 200
 
@@ -53,7 +55,7 @@ def affinity_webhook():
 def affinity_webhook():
     if request.method == 'POST':
         data = request.json
-        print(data)
+        print(f"New formulair: {data}")
 
     return "formulair webhook received and processed", 200
 
