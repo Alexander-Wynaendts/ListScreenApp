@@ -2,7 +2,6 @@ from flask import Flask, request
 
 from script.affinity_company_data import affinity_company_data
 from script.website_scraping import website_scraping
-from script.website_analysis import website_analysis
 from script.lemlist_export import lemlist_export
 from script.gmail_inbound import gmail_inbound
 from script.company_import_affinity import company_import_affinity
