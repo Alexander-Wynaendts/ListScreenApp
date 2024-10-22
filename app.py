@@ -56,7 +56,9 @@ def gmail_webhook():
 
         email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
 
-        print(f"New email: {email_info}")
+        company_info = gmail_inbound(email_info)
+
+        print(f"New company out of email: {company_info}")
 
     return "Gmail webhook received and processed", 200
 
