@@ -19,14 +19,10 @@ def affinity_webhook():
             body = data.get('body', {})
             name = body.get('name', '')
             website_url = body.get('domain', '')  # Adjust if there's another field for website URL
-
-            # Store in a dictionary
             company_info = {'Name': name, 'Website URL': website_url}
 
-            # Run the list_screening function
-            company_screened = company_screening(company_info)
-            #import_affinity(company_screened)
-            print(f"New company to process: {company_screened}")
+            #company_screened = company_screening(company_info)
+            print(f"New company: {company_info}")
 
         # Check for field_value.updated event and the status field
         if data.get('type') == 'field_value.updated':
@@ -34,15 +30,17 @@ def affinity_webhook():
             field_name = body.get('field', {}).get('name', '')
             if field_name == 'Status':
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
-                    company_info = affinity_entry_data(body)
+                    entry_data = affinity_entry_data(body)
+                    company_info = { "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
+                    print(f'Status New: {company_info}')
                     #company_screened = company_screening(company_info)
                     #import_affinity(company_screened)
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
-                    company_info = affinity_entry_data(body)
-                    print(f'SAYEZZ {company_info}')
+                    entry_data = affinity_entry_data(body)
+                    company_info = {"FirstName": entry_data.get("FirstName"), "LastName": entry_data.get("LastName"), "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
+                    print(f'Status To be contacted: {company_info}')
                     #outreach_export(company_info)
-                    print(f"New company to process: {company_info}")
 
         return "Affinity webhook received and processed", 200
 
