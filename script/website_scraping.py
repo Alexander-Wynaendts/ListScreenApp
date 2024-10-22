@@ -13,14 +13,16 @@ def page_scraping(website_url):
     Scrapes the content of the given website URL and extracts structured information.
     Returns the content and a set of links found on the page.
     """
+
     important_tags = ['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'em']
     structured_text = []
     links = set()
     client = ScrapingBeeClient(api_key=scraping_bee_api)
 
-    # Ensure the URL starts with 'https://' or 'http://'
-    if not website_url.startswith('http'):
-        website_url = 'https://' + website_url
+    # Remove any existing protocol and 'www.' from the URL
+    website_url_no_protocol = re.sub(r'^https?://(www\.)?', '', website_url)
+
+    prefixes = ['https://', 'https://www.', 'http://', 'http://www.']
 
     def scrape_page(url):
         try:
@@ -32,15 +34,17 @@ def page_scraping(website_url):
         except Exception:
             return None
 
-    # Try with 'https://'
-    soup = scrape_page(website_url)
-    if soup is None:
-        # Try with 'http://'
-        website_url = website_url.replace('https://', 'http://')
-        soup = scrape_page(website_url)
-        if soup is None:
-            print(f"Failed to retrieve content from {website_url}")
-            return None, None
+    # Try the different prefixes
+    soup = None
+    for prefix in prefixes:
+        test_url = prefix + website_url_no_protocol
+        soup = scrape_page(test_url)
+        if soup is not None:
+            website_url = test_url  # Update website_url to the working URL
+            break
+    else:
+        print(f"Failed to retrieve content from {website_url}")
+        return None, None
 
     # Extract the page title
     if soup.title:
