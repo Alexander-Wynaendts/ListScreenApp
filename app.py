@@ -5,7 +5,7 @@ from script.company_screening import company_screening
 from script.outreach_export import outreach_export
 from script.gmail_inbound import gmail_inbound
 from script.formulair_inbound import formulair_inbound
-from script.import_affinity import import_affinity
+from script.company_import_affinity import company_import_affinity
 
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def affinity_webhook():
                     company_info = { "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
                     print(f'Status New: {company_info}')
                     #company_screened = company_screening(company_info)
-                    #import_affinity(company_screened)
+                    #company_import_affinity(company_screened)
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     entry_data = affinity_company_data(body)
@@ -60,7 +60,7 @@ def gmail_webhook():
         company_info = { "Name": email_info.get("Name"), "Website URL": email_info.get("Website URL") }
 
         #company_screened = company_screening(company_info)
-        #import_affinity(company_screened)
+        #company_import_affinity(company_screened)
 
         print(f"New company out of email: {company_info}")
 
@@ -135,6 +135,18 @@ def formulair_webhook():
         print(f"New form submission: {company_info}")
 
     return "Formulair webhook received and processed", 200
+
+@app.route('/fireflies-webhook', methods=['POST'])
+def fireflies_webhook():
+    if request.method == 'POST':
+        data = request.json
+
+        #transcript_data =
+        #fireflies_import_affinity()
+
+        print(f"New transcript from Fireflies: {data}")
+
+    return "Fireflies webhook received and processed", 200
 
 if __name__ == '__main__':
     app.run(debug=True)
