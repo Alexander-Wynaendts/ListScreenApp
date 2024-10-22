@@ -6,9 +6,7 @@ from urllib.parse import urljoin, urlparse
 import re
 from time import sleep
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 scraping_bee_api = os.getenv("SCRAPING_BEE")
 

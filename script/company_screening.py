@@ -2,8 +2,6 @@ from .website_screening import website_screen_process
 from .website_analysis import website_analysis_process
 from .import_affinity import import_affinity
 
-import warnings
-warnings.filterwarnings("ignore")
 
 def company_screening(company_info):
 

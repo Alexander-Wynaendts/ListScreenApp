@@ -2,10 +2,7 @@ import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-# API key and base URL
 api_key = os.getenv("AFFINITY_API_KEY")  # Load API key from environment variable
 base_url = "https://api.affinity.co"
 list_id = 271745
