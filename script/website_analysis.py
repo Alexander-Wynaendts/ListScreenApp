@@ -52,6 +52,18 @@ def website_analysis_process(company_info):
     Running the GPT analysis sequentially for a single company.
     """
 
+    # Step 4: Perform the first GPT screening (Software vs Hardware)
+    gpt_answer = gpt_software_hardware_screen(website_data)
+
+    if gpt_answer == "1":
+        # Step 5: Perform the second GPT screening (Software vs Service)
+        gpt_answer = gpt_software_service_screen(website_data)
+
+    # Check the total length of website data
+    total_length = sum(len(content) for content in website_data.values())
+    if total_length < 500:
+        return "1", website_data
+
     # Case 1: If 'GPT Website Screen' is 0, mark fields as "Not SaaS"
     if company_info['GPT Website Screen'] == "0":
         company_info['GPT Raw Analysis'] = "Hardware"
@@ -86,3 +98,46 @@ def website_analysis_process(company_info):
         company_info['GPT Region'] = "Service"
 
     return company_info
+
+
+def gpt_software_hardware_screen(website_data):
+    prompt = f"""
+You are an expert in classifying companies' products/services as "Software" or "Hardware" based on the following dictionary of website links and their corresponding content.
+The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily a Software or Hardware company.
+
+{website_data}
+
+Give a binary output:
+- "1" for a Software company
+- "0" for a Hardware company
+"""
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    gpt_analysis = response['choices'][0]['message']['content'].strip()
+    gpt_answer = ''.join(filter(str.isdigit, gpt_analysis))
+    return gpt_answer[-1] if gpt_answer else None
+
+def gpt_software_service_screen(website_data):
+    prompt = f"""
+You are an expert in classifying companies as "Software" or "Service" based on the following dictionary of website links and their corresponding content.
+The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily offering Software or Service.
+
+{website_data}
+
+Give a binary output:
+- "1" for Software
+- "2" for Service
+"""
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    gpt_analysis = response['choices'][0]['message']['content'].strip()
+    gpt_answer = ''.join(filter(str.isdigit, gpt_analysis))
+    return gpt_answer[-1] if gpt_answer else None
