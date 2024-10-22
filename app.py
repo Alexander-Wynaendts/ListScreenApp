@@ -25,24 +25,33 @@ def affinity_webhook():
             company_info = {'Name': name, 'Website URL': website_url}
 
             # Run the list_screening function
-            #company_screened  = company_screening(company_info)
+            #company_screened = company_screening(company_info)
+            #import_affinity(company_screened)
             print(f"New company to process: {company_info}")
 
         # Check for field_value.updated event and the status field
         if data.get('type') == 'field_value.updated':
             body = data.get('body', {})
             field_name = body.get('field', {}).get('name', '')
-            field_value = body.get('value', {}).get('text', '')
+            if field_name == 'Status':
+                if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
 
-            if field_name == 'Status' and (field_value is None or field_value == 'New'):
-                #company_screened = company_screening(company_info)
-                print(f"New company to process: {company_info}")
+                    name = body.get('name', '')
+                    website_url = body.get('domain', '')
+                    company_info = {'Name': name, 'Website URL': website_url}
 
-            if field_name == 'Status' and field_value == 'To be contacted':
-                #outreach_export(company_info)
-                print(f"New company to process: {company_info}")
+                    #company_screened = company_screening(company_info)
+                    #import_affinity(company_screened)
+                    print(f"New company to process: {company_info}")
 
-        #import_affinity(company_screened)
+                if body.get('value', {}).get('text', '') == 'To be contacted':
+
+                    name = body.get('name', '')
+                    website_url = body.get('domain', '')
+                    company_info = {'Name': name, 'Website URL': website_url}
+
+                    #outreach_export(company_info)
+                    print(f"New company to process: {company_info}")
 
         return "Affinity webhook received and processed", 200
 
@@ -60,6 +69,9 @@ def gmail_webhook():
         email_info = gmail_inbound(email_info)
 
         company_info = { "Name": email_info.get("Name"), "Website URL": email_info.get("Website URL") }
+
+        #company_screened = company_screening(company_info)
+        #import_affinity(company_screened)
 
         print(f"New company out of email: {company_info}")
 
@@ -98,11 +110,9 @@ def formulair_webhook():
             elif label == 'What is you company name?':
                 formulair_info['Name'] = value
             elif label == 'Are you a B2B SaaS company?':
-                # Handle multiple-choice field
                 selected_option_ids = value
                 options = field.get('options', [])
                 selected_options = [opt['text'] for opt in options if opt['id'] in selected_option_ids]
-                # Extract the first option as a string
                 formulair_info['b2b_saas'] = selected_options[0] if selected_options else None
             elif label == 'In what industry are you operating?':
                 formulair_info['industry'] = value
@@ -130,6 +140,9 @@ def formulair_webhook():
                     formulair_info['uploaded_file'] = None
 
         company_info = { "Name": formulair_info.get("Name"), "Website URL": formulair_info.get("Website URL") }
+
+        #company_screened = company_screening(company_info)
+        #import_affinity(company_screened)
         print(f"New form submission: {company_info}")
 
     return "Formulair webhook received and processed", 200
