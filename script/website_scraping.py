@@ -8,7 +8,7 @@ import os
 openai.api_key = os.getenv("OPENAI_API_KEY")
 scraping_bee_api = os.getenv("SCRAPING_BEE")
 
-def website_scraping(website_url):
+def page_scraping(website_url):
     """
     Scrapes the content of the given website URL and extracts structured information.
     Returns the content and a set of links found on the page.
@@ -110,7 +110,7 @@ Return the top 2 URLs, each on a new line, with no additional text or formatting
 
 def website_scaping(website_url):
     # Step 1: Scrape the landing page content and links
-    website_content, link_list = website_scraping(website_url)
+    website_content, link_list = page_scraping(website_url)
     if website_content is None:
         # If failed to scrape the website, return '1' and empty data
         return "1", {}
@@ -121,7 +121,7 @@ def website_scaping(website_url):
     # Step 3: Scrape all relevant website links and store in a dictionary
     website_data = {website_url: website_content}
     for selected_link in selected_links:
-        link_content, _ = website_scraping(selected_link)
+        link_content, _ = page_scraping(selected_link)
         if link_content:
             website_data[selected_link] = link_content
 

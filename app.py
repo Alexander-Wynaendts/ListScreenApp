@@ -16,11 +16,9 @@ def affinity_webhook():
         # Check for organization.created event
         if data.get('type') == 'organization.created':
             body = data.get('body', {})
-            name = body.get('name', '')
             website_url = body.get('domain', '')  # Adjust if there's another field for website URL
-            company_info = {'Name': name, 'Website URL': website_url}
 
-            website_data = website_scraping(company_info)
+            website_data = website_scraping(website_url)
             #company_screened = website_analysis(website_data)
             #company_import_affinity(company_screened)
             #company_screened['Status'] = "To Screen"
@@ -33,9 +31,9 @@ def affinity_webhook():
             if field_name == 'Status':
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
                     entry_data = affinity_company_data(body)
-                    company_info = { "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
+                    webiste_url = entry_data.get("Website URL")
 
-                    website_data = website_scraping(company_info)
+                    website_data = website_scraping(webiste_url)
                     #company_screened = website_analysis(website_data)
                     #company_import_affinity(company_screened)
                     #company_screened['Status'] = "To Screen"
@@ -62,12 +60,14 @@ def gmail_webhook():
         email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
         email_info = gmail_inbound(email_info)
 
-        company_info = { "Name": email_info.get("Name"), "Website URL": email_info.get("Website URL") }
+        webiste_url = email_info.get("Website URL")
 
-        company_screened = company_screening(company_info)
+        website_data = website_scraping(webiste_url)
+        #company_screened = website_analysis(website_data)
         #company_import_affinity(company_screened)
+        #company_screened['Status'] = "To Screen"
 
-        print(f"New company out of email: {company_screened}")
+        print(f"New company out of email: {website_data}")
 
     return "Gmail webhook received and processed", 200
 
@@ -133,9 +133,9 @@ def formulair_webhook():
                 else:
                     formulair_info['uploaded_file'] = None
 
-        company_info = { "Name": formulair_info.get("Name"), "Website URL": formulair_info.get("Website URL") }
+        website_url = formulair_info.get("Website URL")
 
-        website_data = website_scraping(company_info)
+        website_data = website_scraping(website_url)
         #company_screened = website_analysis(website_data)
         #company_import_affinity(company_screened)
         #company_screened['Status'] = "To Screen"
