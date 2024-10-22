@@ -1,7 +1,8 @@
 from flask import Flask, request
 
 from script.affinity_company_data import affinity_company_data
-from script.company_screening import company_screening
+from script.website_scraping import website_scraping
+from script.website_analysis import website_analysis
 from script.lemlist_export import lemlist_export
 from script.gmail_inbound import gmail_inbound
 from script.company_import_affinity import company_import_affinity
@@ -20,9 +21,11 @@ def affinity_webhook():
             website_url = body.get('domain', '')  # Adjust if there's another field for website URL
             company_info = {'Name': name, 'Website URL': website_url}
 
-            company_screened = company_screening(company_info)
+            website_data = website_scraping(company_info)
+            #company_screened = website_analysis(website_data)
             #company_import_affinity(company_screened)
-            print(f"New company: {company_screened}")
+            #company_screened['Status'] = "To Screen"
+            print(f"New company: {website_data}")
 
         # Check for field_value.updated event and the status field
         if data.get('type') == 'field_value.updated':
@@ -32,9 +35,12 @@ def affinity_webhook():
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
                     entry_data = affinity_company_data(body)
                     company_info = { "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
-                    company_screened = company_screening(company_info)
+
+                    website_data = website_scraping(company_info)
+                    #company_screened = website_analysis(website_data)
                     #company_import_affinity(company_screened)
-                    print(f'Status New: {company_screened}')
+                    #company_screened['Status'] = "To Screen"
+                    print(f'Status New: {website_data}')
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     entry_data = affinity_company_data(body)
@@ -130,9 +136,11 @@ def formulair_webhook():
 
         company_info = { "Name": formulair_info.get("Name"), "Website URL": formulair_info.get("Website URL") }
 
-        company_screened = company_screening(company_info)
+        website_data = website_scraping(company_info)
+        #company_screened = website_analysis(website_data)
         #company_import_affinity(company_screened)
-        print(f"New form submission: {company_screened}")
+        #company_screened['Status'] = "To Screen"
+        print(f"New form submission: {website_data}")
 
     return "Formulair webhook received and processed", 200
 
