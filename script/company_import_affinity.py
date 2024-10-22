@@ -100,7 +100,7 @@ def update_field_value(field_value_id, value, is_dropdown):
     print(response.json())
 
 # Function to process startup_data
-def import_affinity(startup_data):
+def company_import_affinity(startup_data):
     # Fetch the list entries once before processing
     url = f"{base_url}/lists/{list_id}/list-entries"
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
