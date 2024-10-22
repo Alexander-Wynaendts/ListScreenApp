@@ -151,4 +151,7 @@ def website_analysis(company_info):
             company_info['GPT Revenue Model'] = "N.A."
             company_info['GPT Region'] = "N.A."
 
+    print(company_info['GPT Raw Analysis'])
+    company_info.pop('GPT Raw Analysis', None)
+
     return company_info
