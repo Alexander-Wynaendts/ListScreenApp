@@ -4,6 +4,48 @@ import os
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+def gpt_software_hardware_screen(website_data):
+    prompt = f"""
+You are an expert in classifying companies' products/services as "Software" or "Hardware" based on the following dictionary of website links and their corresponding content.
+The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily a Software or Hardware company.
+
+{website_data}
+
+Give a binary output:
+- "1" for a Software company
+- "0" for a Hardware company
+"""
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    gpt_analysis = response['choices'][0]['message']['content'].strip()
+    gpt_answer = ''.join(filter(str.isdigit, gpt_analysis))
+    return gpt_answer[-1] if gpt_answer else None
+
+def gpt_software_service_screen(website_data):
+    prompt = f"""
+You are an expert in classifying companies as "Software" or "Service" based on the following dictionary of website links and their corresponding content.
+The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily offering Software or Service.
+
+{website_data}
+
+Give a binary output:
+- "1" for Software
+- "2" for Service
+"""
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    gpt_analysis = response['choices'][0]['message']['content'].strip()
+    gpt_answer = ''.join(filter(str.isdigit, gpt_analysis))
+    return gpt_answer[-1] if gpt_answer else None
+
 def gpt_enterprise_analysis(website_data):
     prompt = f"""
 You are an expert in analyzing companies based on the following dictionary of website links and their corresponding content. You are provided with a company's website scraped content stored in the following dictionary format (link1:content1, link2:content2, ...):
@@ -47,49 +89,7 @@ Market Region: <Return only "Global" or a specific country, continent, or region
 
     return gpt_analysis, formatted_analysis
 
-def gpt_software_hardware_screen(website_data):
-    prompt = f"""
-You are an expert in classifying companies' products/services as "Software" or "Hardware" based on the following dictionary of website links and their corresponding content.
-The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily a Software or Hardware company.
-
-{website_data}
-
-Give a binary output:
-- "1" for a Software company
-- "0" for a Hardware company
-"""
-
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-    )
-
-    gpt_analysis = response['choices'][0]['message']['content'].strip()
-    gpt_answer = ''.join(filter(str.isdigit, gpt_analysis))
-    return gpt_answer[-1] if gpt_answer else None
-
-def gpt_software_service_screen(website_data):
-    prompt = f"""
-You are an expert in classifying companies as "Software" or "Service" based on the following dictionary of website links and their corresponding content.
-The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily offering Software or Service.
-
-{website_data}
-
-Give a binary output:
-- "1" for Software
-- "2" for Service
-"""
-
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-    )
-
-    gpt_analysis = response['choices'][0]['message']['content'].strip()
-    gpt_answer = ''.join(filter(str.isdigit, gpt_analysis))
-    return gpt_answer[-1] if gpt_answer else None
-
-def website_analysis_process(company_info):
+def website_analysis(company_info):
     """
     Running the GPT analysis sequentially for a single company.
     company_info is a dictionary that must contain 'Website Data' (a dictionary of link:content)
@@ -97,6 +97,8 @@ def website_analysis_process(company_info):
 
     website_data = company_info.get('Website Data', {})
     total_length = sum(len(content) for content in website_data.values())
+
+    print(f"The length is {total_length}")
 
     # Step 1: Perform the first GPT screening (Software vs Hardware)
     gpt_answer = gpt_software_hardware_screen(website_data)
