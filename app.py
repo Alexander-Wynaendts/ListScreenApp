@@ -21,8 +21,6 @@ def affinity_webhook():
             name = body.get('name', '')
             website_url = body.get('domain', '')
 
-            add_company_to_affinity(name, website_url)
-
             website_data = website_scraping(website_url)
             company_screened = website_analysis(website_data)
             company_screened['Status'] = "To Screen"
@@ -42,6 +40,7 @@ def affinity_webhook():
 
                     website_data = website_scraping(website_url)
                     company_screened = website_analysis(website_data)
+                    company_screened["Website URL"] = website_url
                     company_screened['Status'] = "To Screen"
 
                     update_affinity_field(company_screened)
@@ -73,6 +72,9 @@ def gmail_webhook():
         website_url = email_info.get("Website URL")
 
         add_company_to_affinity(name, website_url)
+        #email_info.pop unwanted columns
+        #email_info["Tag"] = "Gmail Inbound"
+        #update_affinity_field(email_info)
 
         print(f"New company out of email: {email_info}")
 
@@ -144,6 +146,9 @@ def formulair_webhook():
         website_url = formulair_info.get("Website URL")
 
         add_company_to_affinity(name, website_url)
+        #formulair_info.pop unwanted columns
+        #formulair_info["Tag"] = "Website Inbound"
+        #update_affinity_field(formulair_info)
 
         print(f"New form submission: {formulair_info}")
 
