@@ -4,7 +4,7 @@ import os
 
 api_key = os.getenv("AFFINITY_API_KEY")
 
-def retrieve_company_info(body):
+def affinity_entry_data(body):
     # Extract list_id and list_entry_id from the body
     list_id = body.get('field', {}).get('list_id')
     list_entry_id = body.get('list_entry_id')
@@ -18,6 +18,9 @@ def retrieve_company_info(body):
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
 
     data = response.json()
+
+    print(data)
+
     # Extract "Name" and "Website URL" from the response
     entity = data.get('entity', {})
 

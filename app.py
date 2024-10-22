@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from script.retrieve_company_info import retrieve_company_info
+from script.affinity_entry_data import affinity_entry_data
 from script.company_screening import company_screening
 from script.outreach_export import outreach_export
 from script.gmail_inbound import gmail_inbound
@@ -34,14 +34,12 @@ def affinity_webhook():
             field_name = body.get('field', {}).get('name', '')
             if field_name == 'Status':
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
-                    company_info = retrieve_company_info(body)
-                    print(f'SAYEZZ {company_info}')
+                    company_info = affinity_entry_data(body)
                     #company_screened = company_screening(company_info)
                     #import_affinity(company_screened)
-                    print(f"New company to process: {company_info}")
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
-                    company_info = retrieve_company_info(body)
+                    company_info = affinity_entry_data(body)
                     print(f'SAYEZZ {company_info}')
                     #outreach_export(company_info)
                     print(f"New company to process: {company_info}")
