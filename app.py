@@ -18,6 +18,8 @@ def affinity_webhook():
             body = data.get('body', {})
             website_url = body.get('domain', '')  # Adjust if there's another field for website URL
 
+            print(website_url)
+
             website_data = website_scraping(website_url)
             #company_screened = website_analysis(website_data)
             #company_import_affinity(company_screened)
