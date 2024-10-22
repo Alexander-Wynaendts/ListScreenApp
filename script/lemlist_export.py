@@ -1,7 +1,7 @@
 from .lemlist_formatting import lemlist_formatting
 import time
 
-def outreach_export(startup_data):
+def lemlist_export(startup_data):
 
     # Record the start time
     start_time = time.time()
