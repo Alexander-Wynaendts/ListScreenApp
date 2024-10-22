@@ -4,7 +4,6 @@ from script.affinity_company_data import affinity_company_data
 from script.company_screening import company_screening
 from script.lemlist_export import lemlist_export
 from script.gmail_inbound import gmail_inbound
-from script.formulair_inbound import formulair_inbound
 from script.company_import_affinity import company_import_affinity
 
 app = Flask(__name__)
@@ -63,7 +62,7 @@ def gmail_webhook():
         company_screened = company_screening(company_info)
         #company_import_affinity(company_screened)
 
-        print(f"New company out of email: {company_info}")
+        print(f"New company out of email: {company_screened}")
 
     return "Gmail webhook received and processed", 200
 
@@ -133,7 +132,7 @@ def formulair_webhook():
 
         company_screened = company_screening(company_info)
         #company_import_affinity(company_screened)
-        print(f"New form submission: {company_info}")
+        print(f"New form submission: {company_screened}")
 
     return "Formulair webhook received and processed", 200
 
