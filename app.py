@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from script.affinity_entry_data import affinity_entry_data
+from script.affinity_company_data import affinity_company_data
 from script.company_screening import company_screening
 from script.outreach_export import outreach_export
 from script.gmail_inbound import gmail_inbound
@@ -30,15 +30,15 @@ def affinity_webhook():
             field_name = body.get('field', {}).get('name', '')
             if field_name == 'Status':
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
-                    entry_data = affinity_entry_data(body)
+                    entry_data = affinity_company_data(body)
                     company_info = { "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
                     print(f'Status New: {company_info}')
                     #company_screened = company_screening(company_info)
                     #import_affinity(company_screened)
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
-                    entry_data = affinity_entry_data(body)
-                    company_info = {"FirstName": entry_data.get("FirstName"), "LastName": entry_data.get("LastName"), "Name": entry_data.get("Name"), "Website URL": entry_data.get("Website URL") }
+                    entry_data = affinity_company_data(body)
+                    company_info = entry_data
                     print(f'Status To be contacted: {company_info}')
                     #outreach_export(company_info)
 
