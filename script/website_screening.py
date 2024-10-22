@@ -1,24 +1,16 @@
 import openai
+from scrapingbee import ScrapingBeeClient
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
 import requests
+from urllib.parse import urljoin, urlparse
 import re
+from time import sleep
 import os
 from dotenv import load_dotenv
-from concurrent.futures import ThreadPoolExecutor
-import warnings
-warnings.filterwarnings("ignore")
-
-from scrapingbee import ScrapingBeeClient
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 scraping_bee_api = os.getenv("SCRAPING_BEE")
-
-from time import sleep
-from urllib.parse import urljoin, urlparse
-from bs4 import BeautifulSoup
-from scrapingbee import ScrapingBeeClient
 
 def website_scraping(website_url):
     """
@@ -257,21 +249,21 @@ def website_screening(website_url):
     except Exception as e:
         return None, str(e)
 
-def website_screen_process(startup_data):
+def website_screen_process(company_info):
     """
-    Running the scraping and GPT screening in parallel on all websites using 5 workers.
+    Processes a single company's website information by running scraping and GPT screenings sequentially.
     """
-    # Create a ThreadPoolExecutor to parallelize the scraping and screening
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        # List to store all results
-        all_results = []
+    try:
+        # Scrape and screen the website using its URL
+        gpt_answer, website_data = website_screening(company_info['Website URL'])
 
-        # Execute the website screening for all URLs in parallel with progress display
-        for idx, result in enumerate(executor.map(website_screening, startup_data['Website URL'])):
-            all_results.append(result)
-            print(f"Progress: {idx + 1}/{len(startup_data)}")  # Display progress
+        # Store the results in the company_info dictionary
+        company_info['GPT Website Screen'] = gpt_answer
+        company_info['Website Data'] = website_data
 
-    # Convert results into two separate columns
-    startup_data['GPT Website Screen'], startup_data['Website Data'] = zip(*all_results)
+    except Exception as e:
+        # Handle any errors during the screening process
+        company_info['GPT Website Screen'] = "Error"
+        company_info['Website Data'] = str(e)
 
-    return startup_data
+    return company_info

@@ -2,7 +2,9 @@ import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # API key and base URL
 api_key = os.getenv("AFFINITY_API_KEY")  # Load API key from environment variable
 base_url = "https://api.affinity.co"
@@ -94,7 +96,7 @@ def create_field_value(entity_id, field_id, value, list_entry_id=None):
 def update_field_value(field_value_id, value, is_dropdown):
     url = f"{base_url}/field-values/{field_value_id}"
     if is_dropdown:
-        payload = {"value": str(value)}
+        payload = {"value": {"id": str(value)}}
     else:
         payload = {"value": str(value)}
     response = requests.put(url, json=payload, auth=HTTPBasicAuth('', api_key), headers={"Content-Type": "application/json"})
