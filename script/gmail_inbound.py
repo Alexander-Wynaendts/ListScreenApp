@@ -27,23 +27,27 @@ def gmail_inbound(email_info):
 
     # Construct the Website URL and Company Name if domain is not a common email provider
     if domain:
-        company_info["Website URL"] = f"https://{domain}"
-        # Get the company name from the domain (capitalize first letter and take everything until the '.')
-        company_name = domain.split('.')[0].capitalize()
+        company_info["Website URL"] = domain
+        # Get the company name by keeping everything before the last dot ('.')
+        company_name = '.'.join(domain.split('.')[:-1]).capitalize()
         company_info["Name"] = company_name
     else:
         company_info["Website URL"] = ''
         company_info["Name"] = ''
 
-    # Create a single string variable with Subject and Content, removing '\r\n'
+    # Create a single string variable with Subject and Content, formatted as required
     subject = email_info.get('subject', '').strip()
     plain_body = email_info.get('plain_body', '').strip()
 
     # Remove line breaks and carriage returns from the content
     content = plain_body.replace('\r', '').replace('\n', '')
 
-    # Combine Subject and Content into one string
-    the_string = f"{subject}\n\n{content}"
+    # Combine Subject and Content into one string with the desired format
+    the_string = f"""
+Subject:'{subject}'
+
+Content:'{content}'
+"""
     company_info["Email Content"] = the_string
 
     return company_info
