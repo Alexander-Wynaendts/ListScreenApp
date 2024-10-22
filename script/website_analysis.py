@@ -121,7 +121,7 @@ def website_analysis(website_data):
         company_screened['GPT Region'] = "-"
     else:
         # Process based on 'GPT Website Screen' value
-        screen_result = website_data['GPT Website Screen']
+        screen_result = company_screened['GPT Website Screen']
         if screen_result == "0":
             # Hardware
             company_screened['GPT Raw Analysis'] = "Hardware"
