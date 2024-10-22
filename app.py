@@ -38,7 +38,7 @@ def affinity_webhook():
                     print(f'SAYEZZ {company_info}')
                     #company_screened = company_screening(company_info)
                     #import_affinity(company_screened)
-                    print(f"New company to process: {company_screened}")
+                    print(f"New company to process: {company_info}")
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     company_info = retrieve_company_info(body)
