@@ -73,7 +73,11 @@ def formulair_webhook():
         fields = data.get('data', {}).get('fields', [])
 
         # Initialize a dictionary to store extracted information
-        formulair_info = {}
+        formulair_info = {
+            'first_names': [],
+            'last_names': [],
+            'emails': []
+        }
 
         print(fields)
 
@@ -83,12 +87,15 @@ def formulair_webhook():
             value = field.get('value')
             field_type = field.get('type')
 
-            if label == 'First name' or label == 'Please allow us to contact you!':
-                formulair_info['first_name'] = value
+            if label in ['First name', 'Please allow us to contact you!']:
+                if value:
+                    formulair_info['first_names'].append(value)
             elif label == 'Last Name':
-                formulair_info['last_name'] = value
+                if value:
+                    formulair_info['last_names'].append(value)
             elif label == 'Email':
-                formulair_info['email'] = value
+                if value:
+                    formulair_info['emails'].append(value)
             elif label == 'What is you company name?':
                 formulair_info['Name'] = value
             elif label == 'Are you a B2B SaaS company?':
@@ -96,7 +103,8 @@ def formulair_webhook():
                 selected_option_ids = value
                 options = field.get('options', [])
                 selected_options = [opt['text'] for opt in options if opt['id'] in selected_option_ids]
-                formulair_info['b2b_saas'] = selected_options
+                # Extract the first option as a string
+                formulair_info['b2b_saas'] = selected_options[0] if selected_options else None
             elif label == 'In what industry are you operating?':
                 formulair_info['industry'] = value
             elif label == 'What does your startup do?':
@@ -110,17 +118,22 @@ def formulair_webhook():
                 selected_option_ids = value
                 options = field.get('options', [])
                 selected_options = [opt['text'] for opt in options if opt['id'] in selected_option_ids]
-                formulair_info['funding_round'] = selected_options
+                # Extract the first option as a string
+                formulair_info['funding_round'] = selected_options[0] if selected_options else None
             elif label == 'How much are you expecting to raise?':
                 formulair_info['funding_amount'] = value
             elif label == 'Roughly when do you plan on closing this round?':
                 formulair_info['funding_close_date'] = value
             elif field_type == 'FILE_UPLOAD':
                 files = value  # This is a list of files
-                file_urls = [file['url'] for file in files]
-                formulair_info['uploaded_files'] = file_urls
+                if files:
+                    # Get the first file's URL
+                    file_url = files[0]['url']
+                    formulair_info['uploaded_file'] = file_url
+                else:
+                    formulair_info['uploaded_file'] = None
 
-    print(f"New email: {formulair_info}")
+        print(f"New form submission: {formulair_info}")
 
     return "Formulair webhook received and processed", 200
 
