@@ -89,69 +89,70 @@ Market Region: <Return only "Global" or a specific country, continent, or region
 
     return gpt_analysis, formatted_analysis
 
-def website_analysis(company_info):
+def website_analysis(website_data):
     """
     Running the GPT analysis sequentially for a single company.
     company_info is a dictionary that must contain 'Website Data' (a dictionary of link:content)
     """
 
-    website_data = company_info.get('Website Data', {})
+    company_screened = {}
+    company_screened = {"Website Data": website_data}
     total_length = sum(len(content) for content in website_data.values())
 
     print(f"The length is {total_length}")
 
     # Step 1: Perform the first GPT screening (Software vs Hardware)
     gpt_answer = gpt_software_hardware_screen(website_data)
-    company_info['GPT Website Screen'] = gpt_answer  # Save the result
+    company_screened['GPT Website Screen'] = gpt_answer  # Save the result
 
     if gpt_answer == "1":
         # Step 2: Perform the second GPT screening (Software vs Service)
         gpt_answer = gpt_software_service_screen(website_data)
-        company_info['GPT Website Screen'] = gpt_answer  # Update the result
+        company_screened['GPT Website Screen'] = gpt_answer  # Update the result
 
     # Step 3: Check the total length of website data
     if total_length <= 500:
         # Mark fields as '-'
-        company_info['GPT Raw Analysis'] = "-"
-        company_info['GPT Description'] = "-"
-        company_info['GPT Industry'] = "-"
-        company_info['GPT Client Type'] = "-"
-        company_info['GPT Revenue Model'] = "-"
-        company_info['GPT Region'] = "-"
+        company_screened['GPT Raw Analysis'] = "-"
+        company_screened['GPT Description'] = "-"
+        company_screened['GPT Industry'] = "-"
+        company_screened['GPT Client Type'] = "-"
+        company_screened['GPT Revenue Model'] = "-"
+        company_screened['GPT Region'] = "-"
     else:
         # Process based on 'GPT Website Screen' value
-        screen_result = company_info['GPT Website Screen']
+        screen_result = website_data['GPT Website Screen']
         if screen_result == "0":
             # Hardware
-            company_info['GPT Raw Analysis'] = "Hardware"
-            company_info['GPT Description'] = "Hardware"
-            company_info['GPT Industry'] = "Hardware"
-            company_info['GPT Client Type'] = "Hardware"
-            company_info['GPT Revenue Model'] = "Hardware"
-            company_info['GPT Region'] = "Hardware"
+            company_screened['GPT Raw Analysis'] = "Hardware"
+            company_screened['GPT Description'] = "Hardware"
+            company_screened['GPT Industry'] = "Hardware"
+            company_screened['GPT Client Type'] = "Hardware"
+            company_screened['GPT Revenue Model'] = "Hardware"
+            company_screened['GPT Region'] = "Hardware"
         elif screen_result == "2":
             # Service
-            company_info['GPT Raw Analysis'] = "Service"
-            company_info['GPT Description'] = "Service"
-            company_info['GPT Industry'] = "Service"
-            company_info['GPT Client Type'] = "Service"
-            company_info['GPT Revenue Model'] = "Service"
-            company_info['GPT Region'] = "Service"
+            company_screened['GPT Raw Analysis'] = "Service"
+            company_screened['GPT Description'] = "Service"
+            company_screened['GPT Industry'] = "Service"
+            company_screened['GPT Client Type'] = "Service"
+            company_screened['GPT Revenue Model'] = "Service"
+            company_screened['GPT Region'] = "Service"
         elif screen_result == "1":
             # Software, proceed with analysis
             gpt_analysis, formatted_analysis = gpt_enterprise_analysis(website_data)
-            company_info.update(formatted_analysis)
-            company_info['GPT Raw Analysis'] = gpt_analysis
+            company_screened.update(formatted_analysis)
+            company_screened['GPT Raw Analysis'] = gpt_analysis
         else:
             # Unexpected result, mark as 'N.A.'
-            company_info['GPT Raw Analysis'] = "N.A."
-            company_info['GPT Description'] = "N.A."
-            company_info['GPT Industry'] = "N.A."
-            company_info['GPT Client Type'] = "N.A."
-            company_info['GPT Revenue Model'] = "N.A."
-            company_info['GPT Region'] = "N.A."
+            company_screened['GPT Raw Analysis'] = "N.A."
+            company_screened['GPT Description'] = "N.A."
+            company_screened['GPT Industry'] = "N.A."
+            company_screened['GPT Client Type'] = "N.A."
+            company_screened['GPT Revenue Model'] = "N.A."
+            company_screened['GPT Region'] = "N.A."
 
-    print(company_info['GPT Raw Analysis'])
-    company_info.pop('GPT Raw Analysis', None)
+    print(company_screened['GPT Raw Analysis'])
+    company_screened.pop('GPT Raw Analysis', None)
 
-    return company_info
+    return company_screened
