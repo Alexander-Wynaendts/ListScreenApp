@@ -13,6 +13,8 @@ def affinity_webhook():
     if request.method == 'POST':
         data = request.json
 
+        print(data)
+
         # Check for organization.created event
         if data.get('type') == 'organization.created':
             body = data.get('body', {})
@@ -55,8 +57,9 @@ def gmail_webhook():
         html_body = data.get('htmlBody', '')
 
         email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
+        email_info = gmail_inbound(email_info)
 
-        company_info = gmail_inbound(email_info)
+        company_info = { "Name": email_info.get("Name"), "Website URL": email_info.get("Website URL") }
 
         print(f"New company out of email: {company_info}")
 
@@ -67,8 +70,6 @@ def formulair_webhook():
     if request.method == 'POST':
         data = request.json
 
-        print(data)
-
         # Access the 'fields' array from the data
         fields = data.get('data', {}).get('fields', [])
 
@@ -78,8 +79,6 @@ def formulair_webhook():
             'last_names': [],
             'emails': []
         }
-
-        print(fields)
 
         # Loop through each field and extract key information
         for field in fields:
@@ -114,26 +113,24 @@ def formulair_webhook():
             elif label == 'Where is your company based?':
                 formulair_info['company_location'] = value
             elif label == 'What kind of funding round are you raising?':
-                # Handle multiple-choice field
                 selected_option_ids = value
                 options = field.get('options', [])
                 selected_options = [opt['text'] for opt in options if opt['id'] in selected_option_ids]
-                # Extract the first option as a string
                 formulair_info['funding_round'] = selected_options[0] if selected_options else None
             elif label == 'How much are you expecting to raise?':
                 formulair_info['funding_amount'] = value
             elif label == 'Roughly when do you plan on closing this round?':
                 formulair_info['funding_close_date'] = value
             elif field_type == 'FILE_UPLOAD':
-                files = value  # This is a list of files
+                files = value
                 if files:
-                    # Get the first file's URL
                     file_url = files[0]['url']
                     formulair_info['uploaded_file'] = file_url
                 else:
                     formulair_info['uploaded_file'] = None
 
-        print(f"New form submission: {formulair_info}")
+        company_info = { "Name": formulair_info.get("Name"), "Website URL": formulair_info.get("Website URL") }
+        print(f"New form submission: {company_info}")
 
     return "Formulair webhook received and processed", 200
 
