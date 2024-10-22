@@ -108,7 +108,7 @@ Return the top 2 URLs, each on a new line, with no additional text or formatting
     links = re.findall(r'(https?://[^\s]+)', gpt_response)
     return links[:2]
 
-def website_scaping(website_url):
+def website_scraping(website_url):
     # Step 1: Scrape the landing page content and links
     website_content, link_list = page_scraping(website_url)
     if website_content is None:
