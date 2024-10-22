@@ -2,9 +2,7 @@ import openai
 import re
 import os
 
-load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-from dotenv import load_dotenv
 
 def gpt_enterprise_analysis(website_data):
     prompt = f"""
