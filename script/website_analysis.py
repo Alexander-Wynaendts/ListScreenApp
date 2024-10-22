@@ -1,16 +1,10 @@
 import openai
-from concurrent.futures import ThreadPoolExecutor
-import time
-import numpy as np
 import re
 import os
-from dotenv import load_dotenv
-import warnings
-
-warnings.filterwarnings("ignore")
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+from dotenv import load_dotenv
 
 def gpt_enterprise_analysis(website_data):
     prompt = f"""
@@ -55,92 +49,42 @@ def gpt_enterprise_analysis(website_data):
 
     return gpt_analysis, formated_analysis
 
-def website_analysis_process(startup_data):
+def website_analysis_process(company_info):
     """
-    Running the GPT analysis in parallel for filtered SaaS data.
+    Running the GPT analysis sequentially for a single company.
     """
 
-    def track_progress(website_data, idx):
-        """
-        Perform GPT analysis with rate limiting and retry mechanism.
-        """
-        try:
-            gpt_analysis, formated_analysis = gpt_enterprise_analysis(website_data)
-            return gpt_analysis, formated_analysis
-        except openai.error.RateLimitError:
-            print(f"Rate limit reached, retrying after 5 seconds...")
-            time.sleep(5)
-            return track_progress(website_data, idx)
-        except Exception as e:
-            print(f"Error on index {idx}: {e}")
-            return None, None
+    # Case 1: If 'GPT Website Screen' is 0, mark fields as "Not SaaS"
+    if company_info['GPT Website Screen'] == "0":
+        company_info['GPT Raw Analysis'] = "Hardware"
+        company_info['GPT Description'] = "Hardware"
+        company_info['GPT Industry'] = "Hardware"
+        company_info['GPT Client Type'] = "Hardware"
+        company_info['GPT Revenue Model'] = "Hardware"
+        company_info['GPT Region'] = "Hardware"
 
-    # Apply the transformation to the 'Website Data' column
-    startup_data['Website Data'] = startup_data['Website Data'].apply(str)
+    # Case 2: If Website Data length is <= 500, mark fields as "-"
+    elif len(company_info['Website Data']) <= 500:
+        company_info['GPT Raw Analysis'] = "-"
+        company_info['GPT Description'] = "-"
+        company_info['GPT Industry'] = "-"
+        company_info['GPT Client Type'] = "-"
+        company_info['GPT Revenue Model'] = "-"
+        company_info['GPT Region'] = "-"
 
-    # Iterate over all companies in `startup_data`
-    for index, row in startup_data.iterrows():
-        # Case 1: If 'GPT Website Screen' is 0, mark fields as "Not SaaS"
-        if row['GPT Website Screen'] == "0":
-            startup_data.at[index, 'GPT Raw Analysis'] = "Hardware"
-            startup_data.at[index, 'GPT Description'] = "Hardware"
-            startup_data.at[index, 'GPT Industry'] = "Hardware"
-            startup_data.at[index, 'GPT Client Type'] = "Hardware"
-            startup_data.at[index, 'GPT Revenue Model'] = "Hardware"
-            startup_data.at[index, 'GPT Region'] = "Hardware"
+    # Case 3: Process if 'GPT Website Screen' indicates SaaS
+    elif company_info['GPT Website Screen'] == "1":
+        gpt_analysis, formated_analysis = gpt_enterprise_analysis(company_info['Website Data'])
+        company_info.update(formated_analysis)
+        company_info['GPT Raw Analysis'] = gpt_analysis
 
-        elif row['GPT Website Screen'] == "2":
-            startup_data.at[index, 'GPT Raw Analysis'] = "Service"
-            startup_data.at[index, 'GPT Description'] = "Service"
-            startup_data.at[index, 'GPT Industry'] = "Service"
-            startup_data.at[index, 'GPT Client Type'] = "Service"
-            startup_data.at[index, 'GPT Revenue Model'] = "Service"
-            startup_data.at[index, 'GPT Region'] = "Service"
+    # Case 4: If 'GPT Website Screen' indicates Service
+    elif company_info['GPT Website Screen'] == "2":
+        company_info['GPT Raw Analysis'] = "Service"
+        company_info['GPT Description'] = "Service"
+        company_info['GPT Industry'] = "Service"
+        company_info['GPT Client Type'] = "Service"
+        company_info['GPT Revenue Model'] = "Service"
+        company_info['GPT Region'] = "Service"
 
-        # Case 2: If Website Data length is <= 500, mark fields as "-"
-        elif len(row['Website Data']) <= 500:
-            startup_data.at[index, 'GPT Raw Analysis'] = "-"
-            startup_data.at[index, 'GPT Description'] = "-"
-            startup_data.at[index, 'GPT Industry'] = "-"
-            startup_data.at[index, 'GPT Client Type'] = "-"
-            startup_data.at[index, 'GPT Revenue Model'] = "-"
-            startup_data.at[index, 'GPT Region'] = "-"
-
-    # Filter only SaaS companies with sufficient data (Website Data length > 500)
-    saas_data = startup_data[(startup_data['GPT Website Screen'] == "1") &
-                             (startup_data['Website Data'].apply(lambda x: len(x) > 500))]
-
-    # Create a ThreadPoolExecutor to parallelize the GPT analysis
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        results = list(executor.map(track_progress, saas_data['Website Data'], range(len(saas_data))))
-
-    # Add GPT analysis to `startup_data` for SaaS companies
-    for i, (gpt_analysis, formated_analysis) in enumerate(results):
-        if gpt_analysis and formated_analysis:
-            index = saas_data.index[i]
-            startup_data.at[index, 'GPT Raw Analysis'] = gpt_analysis
-            startup_data.at[index, 'GPT Description'] = formated_analysis['GPT Description']
-            startup_data.at[index, 'GPT Industry'] = formated_analysis['GPT Industry']
-            startup_data.at[index, 'GPT Client Type'] = formated_analysis['GPT Client Type']
-            startup_data.at[index, 'GPT Revenue Model'] = formated_analysis['GPT Revenue Model']
-            startup_data.at[index, 'GPT Region'] = formated_analysis['GPT Region']
-
-    # Drop unnecessary columns if they exist in the DataFrame
-    columns_to_drop = ['GPT Website Screen', 'GPT Raw Analysis', 'EntityNumber', 'CBE Info']
-    startup_data = startup_data.drop(columns=[col for col in columns_to_drop if col in startup_data.columns])
-
-    # Rename columns if they exist in the DataFrame
-    columns_to_rename = {
-        'Founders Name': 'Legal Owners',
-        'Founding Year': 'CBE Year Founded',
-        'LinkedIn URL': 'GPT LinkedIn URL'
-    }
-    startup_data = startup_data.rename(columns={old: new for old, new in columns_to_rename.items() if old in startup_data.columns})
-
-    # Extract LinkedIn URLs from the 'LinkedIn Founder' column if it exists
-    if 'LinkedIn Founder' in startup_data.columns:
-        startup_data['LinkedIn Founder'] = startup_data['LinkedIn Founder'].apply(
-            lambda text: " ".join(re.findall(r"'LinkedIn URL': '([^']*)'", text))
-            if isinstance(text, str) else np.nan
-        )
-    return startup_data
+    return company_info
