@@ -23,7 +23,7 @@ def retrieve_company_info(body):
 
     company_info = {}
     organization_name = entity.get('name')
-    website_url = entity.get('url')
+    website_url = entity.get('domain')
     company_info['Name'] = organization_name
     company_info['Website URL'] = website_url
 
