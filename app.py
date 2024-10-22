@@ -1,5 +1,6 @@
 from flask import Flask, request
 
+from script.retrieve_company_info import retrieve_company_info
 from script.company_screening import company_screening
 from script.outreach_export import outreach_export
 from script.gmail_inbound import gmail_inbound
@@ -13,8 +14,6 @@ def affinity_webhook():
     if request.method == 'POST':
         data = request.json
 
-        print(data)
-
         # Check for organization.created event
         if data.get('type') == 'organization.created':
             body = data.get('body', {})
@@ -25,9 +24,9 @@ def affinity_webhook():
             company_info = {'Name': name, 'Website URL': website_url}
 
             # Run the list_screening function
-            #company_screened = company_screening(company_info)
+            company_screened = company_screening(company_info)
             #import_affinity(company_screened)
-            print(f"New company to process: {company_info}")
+            print(f"New company to process: {company_screened}")
 
         # Check for field_value.updated event and the status field
         if data.get('type') == 'field_value.updated':
@@ -35,21 +34,15 @@ def affinity_webhook():
             field_name = body.get('field', {}).get('name', '')
             if field_name == 'Status':
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
-
-                    name = body.get('name', '')
-                    website_url = body.get('domain', '')
-                    company_info = {'Name': name, 'Website URL': website_url}
-
+                    company_info = retrieve_company_info(body)
+                    print(f'SAYEZZ {company_info}')
                     #company_screened = company_screening(company_info)
                     #import_affinity(company_screened)
-                    print(f"New company to process: {company_info}")
+                    print(f"New company to process: {company_screened}")
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
-
-                    name = body.get('name', '')
-                    website_url = body.get('domain', '')
-                    company_info = {'Name': name, 'Website URL': website_url}
-
+                    company_info = retrieve_company_info(body)
+                    print(f'SAYEZZ {company_info}')
                     #outreach_export(company_info)
                     print(f"New company to process: {company_info}")
 
