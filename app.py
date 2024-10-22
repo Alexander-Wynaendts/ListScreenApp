@@ -43,7 +43,7 @@ def affinity_webhook():
         return "Affinity webhook received and processed", 200
 
 @app.route('/gmail-webhook', methods=['POST'])
-def affinity_webhook():
+def gmail_webhook():
     if request.method == 'POST':
         data = request.json
 
@@ -52,7 +52,7 @@ def affinity_webhook():
     return "Gmail webhook received and processed", 200
 
 @app.route('/formulair-webhook', methods=['POST'])
-def affinity_webhook():
+def formulair_webhook():
     if request.method == 'POST':
         data = request.json
         print(f"New formulair: {data}")
