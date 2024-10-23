@@ -26,16 +26,24 @@ def add_people_to_affinity(first_name, last_name, email, website_url):
     url = f"https://api.affinity.co/persons?term={email}"
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
     persons = response.json().get("persons", [])
-    if not persons:
+    person_found = False
+    for person in persons:
+        person_emails = person.get("emails", [])
+        if email in person_emails:
+            person_found = True
+            person_id = person.get("id", "")
+            # Check if the organization is already associated with the person
+            organization_ids = person.get("organization_ids", [])
+            if organization_id not in organization_ids:
+                # Update the person's organization_ids to include the new organization
+                organization_ids.append(organization_id)
+                url = f"https://api.affinity.co/persons/{person_id}"
+                data = {"organization_ids": organization_ids}
+                requests.put(url, auth=HTTPBasicAuth('', api_key), json=data)
+            break
+
+    if not person_found:
         url = "https://api.affinity.co/persons"
-        data = {
-            "first_name": first_name,
-            "last_name": last_name,
-            "emails": [email],
-            "organization_ids": [organization_id]
-        }
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.post(url, auth=HTTPBasicAuth('', api_key), json=data, headers=headers)
+        data = {"first_name": first_name, "last_name": last_name, "emails": [email], "organization_ids": [organization_id]}
+
     return
