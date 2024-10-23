@@ -53,11 +53,11 @@ def affinity_webhook():
                     print(f'Status "New" update: {website_url}')
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
-                    print("NEW TO BE CONTACTED")
                     entry_data = affinity_company_data(body)
                     company_info = entry_data
-                    print("NEW TO BE CONTACTED: 2")
                     lemlist_export(company_info)
+
+                    website_url = company_info.get("Website URL", "")
                     print(f'Status "To be contacted": {website_url}')
 
         return "Affinity webhook received and processed", 200
