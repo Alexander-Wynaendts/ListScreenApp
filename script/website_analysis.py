@@ -97,9 +97,8 @@ def website_analysis(website_data):
 
     company_screened = {}
     company_screened = {"Website Data": website_data}
+    print(f'Website Data: {website_data}')
     total_length = sum(len(content) for content in website_data.values())
-
-    print(f"The length is {total_length}")
 
     # Step 1: Perform the first GPT screening (Software vs Hardware)
     gpt_answer = gpt_software_hardware_screen(website_data)
@@ -152,7 +151,7 @@ def website_analysis(website_data):
             company_screened['GPT Revenue Model'] = "N.A."
             company_screened['GPT Region'] = "N.A."
 
-    print(company_screened['GPT Raw Analysis'])
+    print(company_screened)
     company_screened.pop('GPT Raw Analysis', None)
 
     return company_screened
