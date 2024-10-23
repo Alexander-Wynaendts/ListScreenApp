@@ -62,6 +62,7 @@ def update_affinity_field(company_info):
             organization_fields = response.json()
             field_value_id = None
             for field_value in organization_fields:
+                print(f"THE FILED{field_value}")
                 if field_value.get("field_id") == field_id:
                     field_value_id = field_value.get("id")
                     break
