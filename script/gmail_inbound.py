@@ -35,19 +35,29 @@ def gmail_inbound(email_info):
         company_info["Website URL"] = ''
         company_info["Name"] = ''
 
-    # Create a single string variable with Subject and Content, formatted as required
+    email_info = {
+        'subject': 'Welcome to Our Service',
+        'html_body': '<h1>Hello, User!</h1><p>Thank you for joining us.</p>'
+    }
+
+    company_info = {}
     subject = email_info.get('subject', '').strip()
-    plain_body = email_info.get('plain_body', '').strip()
+    html_body = email_info.get('html_body', '').strip()
 
-    # Remove line breaks and carriage returns from the content
-    content = plain_body.replace('\r', '').replace('\n', '')
-
-    # Combine Subject and Content into one string with the desired format
     the_string = f"""
-Subject:'{subject}'
-
-Content:'{content}'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{subject}</title>
+</head>
+<body>
+    <h1>{subject}</h1>
+    {html_body}
+</body>
+</html>
 """
+
     company_info["Email Content"] = the_string
 
-    return company_info
+    print(company_info["Email Content"])
