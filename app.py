@@ -149,6 +149,8 @@ def formulair_webhook():
         last_names = formulair_info.get("last_names", [])
         emails = formulair_info.get("emails", [])
 
+        print(formulair_info)
+
         # Add company to Affinity using name and website_url
         add_company_to_affinity(name, website_url)
 
