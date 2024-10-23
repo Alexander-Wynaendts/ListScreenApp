@@ -18,7 +18,7 @@ def add_note_to_affinity(website_url, note_content):
     # Fetch existing notes for the organization
     url = "https://api.affinity.co/notes"
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
-    notes = response.json()
+    notes = response.json().get("notes", [])
     note_exists = False
     note_id = None
 
