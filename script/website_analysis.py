@@ -97,7 +97,6 @@ def website_analysis(website_data):
 
     company_screened = {}
     company_screened = {"Website Data": website_data}
-    print(f'Website Data: {website_data}')
     total_length = sum(len(content) for content in website_data.values())
 
     # Step 1: Perform the first GPT screening (Software vs Hardware)
