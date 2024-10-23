@@ -26,6 +26,7 @@ def affinity_webhook():
 
             website_data = website_scraping(website_url)
             company_screened = website_analysis(website_data)
+            company_screened["Website URL"] = website_url
             company_screened['Status'] = "To Screen"
 
             update_affinity_field(company_screened)
@@ -93,11 +94,7 @@ def formulair_webhook():
         fields = data.get('data', {}).get('fields', [])
 
         # Initialize a dictionary to store extracted information
-        formulair_info = {
-            'first_names': [],
-            'last_names': [],
-            'emails': []
-        }
+        formulair_info = {'first_names': [], 'last_names': [], 'emails': []}
 
         # Loop through each field and extract key information
         for field in fields:
