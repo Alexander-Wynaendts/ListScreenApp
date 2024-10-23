@@ -5,6 +5,7 @@ from script.affinity_company_data import affinity_company_data
 from script.website_scraping import website_scraping
 from script.website_analysis import website_analysis
 from script.add_company_to_affinity import add_company_to_affinity
+from script.add_people_to_affinity import add_people_to_affinity
 from script.update_affinity_field import update_affinity_field
 from script.lemlist_export import lemlist_export
 
@@ -144,8 +145,17 @@ def formulair_webhook():
 
         name = formulair_info.get("Name")
         website_url = formulair_info.get("Website URL")
+        first_names = formulair_info.get("first_names", [])
+        last_names = formulair_info.get("last_names", [])
+        emails = formulair_info.get("emails", [])
 
+        # Add company to Affinity using name and website_url
         add_company_to_affinity(name, website_url)
+
+        # Iterate over the first_names, last_names, and emails lists
+        for first_name, last_name, email in zip(first_names, last_names, emails):
+            add_people_to_affinity(first_name, last_name, email, website_url)
+
         #formulair_info.pop unwanted columns
         #formulair_info["Tag"] = "Website Inbound"
         #update_affinity_field(formulair_info)
