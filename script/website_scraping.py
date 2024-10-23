@@ -117,7 +117,7 @@ def website_scraping(website_url):
     website_content, link_list = page_scraping(website_url)
     if website_content is None:
         # If failed to scrape the website, return '1' and empty data
-        return "1", {}
+        return {website_url, {}}
 
     # Step 2: Select the most relevant links using GPT
     selected_links = gpt_link_selection(link_list)
