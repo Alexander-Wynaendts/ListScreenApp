@@ -55,7 +55,7 @@ def affinity_webhook():
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     entry_data = affinity_company_data(body)
                     company_info = entry_data
-                    #lemlist_export(company_info)
+                    lemlist_export(company_info)
                     print(f'Status "To be contacted": {website_url}')
 
         return "Affinity webhook received and processed", 200
