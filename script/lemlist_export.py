@@ -1,19 +1,9 @@
 from .lemlist_formatting import lemlist_formatting
 import time
 
-def lemlist_export(startup_data):
+def lemlist_export(company_info):
 
-    # Record the start time
-    start_time = time.time()
+    print("THIS IS THE LEMLSIT DATA")
+    print(company_info)
 
-    # Format the input files
-    startup_data = lemlist_formatting(startup_data)
-
-    # Record the end time and calculate the elapsed time
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-
-    # Print the total time taken by the process
-    print(f"Total process time: {elapsed_time:.2f} seconds")
-
-    return startup_data
+    return
