@@ -35,12 +35,6 @@ def gmail_inbound(email_info):
         company_info["Website URL"] = ''
         company_info["Name"] = ''
 
-    email_info = {
-        'subject': 'Welcome to Our Service',
-        'html_body': '<h1>Hello, User!</h1><p>Thank you for joining us.</p>'
-    }
-
-    company_info = {}
     subject = email_info.get('subject', '').strip()
     html_body = email_info.get('html_body', '').strip()
 
@@ -61,3 +55,5 @@ def gmail_inbound(email_info):
     company_info["Email Content"] = the_string
 
     print(company_info["Email Content"])
+
+    return
