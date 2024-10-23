@@ -1,13 +1,4 @@
 def formulaire_note(formulair_info):
-    """
-    Formats the formulair_info dictionary into an HTML string.
-
-    Parameters:
-    formulair_info (dict): Dictionary containing form data.
-
-    Returns:
-    str: An HTML-formatted string representing the form data.
-    """
     # Initialize a list to hold HTML lines
     html_lines = []
 
@@ -82,4 +73,15 @@ def formulaire_note(formulair_info):
 
     # Combine all HTML lines into a single string
     note_content = '\n'.join(html_lines)
-    return note_content
+
+    # Wrap the note_content in a complete HTML structure
+    full_html_content = f"""
+<!DOCTYPE html>
+<html>
+<head><title>Formulaire Note</title></head>
+<body>
+    {note_content}
+</body>
+</html>
+"""
+    return full_html_content
