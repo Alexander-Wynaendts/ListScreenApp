@@ -54,6 +54,4 @@ def gmail_inbound(email_info):
 
     company_info["Email Content"] = the_string
 
-    print(company_info["Email Content"])
-
-    return
+    return company_info
