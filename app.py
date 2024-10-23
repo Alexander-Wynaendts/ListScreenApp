@@ -7,6 +7,8 @@ from script.website_analysis import website_analysis
 from script.add_company_to_affinity import add_company_to_affinity
 from script.add_people_to_affinity import add_people_to_affinity
 from script.update_affinity_field import update_affinity_field
+from script.formulaire_note import formulaire_note
+from script.add_note_to_affinity import add_note_to_affinity
 from script.lemlist_export import lemlist_export
 
 app = Flask(__name__)
@@ -71,9 +73,10 @@ def gmail_webhook():
 
         name = email_info.get("Name")
         website_url = email_info.get("Website URL")
+        email_content = email_info.get("Email Content")
 
         add_company_to_affinity(name, website_url)
-        #email_info.pop unwanted columns
+        add_note_to_affinity(website_url, email_content)
         #email_info["Tag"] = "Gmail Inbound"
         #update_affinity_field(email_info)
 
@@ -156,7 +159,8 @@ def formulair_webhook():
         for first_name, last_name, email in zip(first_names, last_names, emails):
             add_people_to_affinity(first_name, last_name, email, website_url)
 
-        #formulair_info.pop unwanted columns
+        note_content = formulaire_note(formulair_info)
+        add_note_to_affinity(website_url, note_content)
         #formulair_info["Tag"] = "Website Inbound"
         #update_affinity_field(formulair_info)
 

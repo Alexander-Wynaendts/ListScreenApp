@@ -151,6 +151,7 @@ def website_analysis(website_data):
             company_screened['GPT Region'] = "N.A."
 
     print(company_screened)
+    company_screened.pop('GPT Website Screen', None)
     company_screened.pop('GPT Raw Analysis', None)
 
     return company_screened
