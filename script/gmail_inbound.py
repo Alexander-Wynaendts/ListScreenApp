@@ -37,19 +37,10 @@ def gmail_inbound(email_info):
 
     subject = email_info.get('subject', '').strip()
     html_body = email_info.get('html_body', '').strip()
-    plain_body = email_info.get('plain_body', '').strip()
-
-    print(subject)
-    print(plain_body)
-    print(html_body)
 
     the_string = f"""
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>{subject}</title>
-</head>
 <body>
     <h1>OBJECT:</h1>
     <p>{subject}</p>
