@@ -9,6 +9,7 @@ from script.add_people_to_affinity import add_people_to_affinity
 from script.update_affinity_field import update_affinity_field
 from script.formulaire_note import formulaire_note
 from script.add_note_to_affinity import add_note_to_affinity
+from script.add_tag_to_affinity import add_tag_to_affinity
 from script.lemlist_export import lemlist_export
 
 app = Flask(__name__)
@@ -78,10 +79,9 @@ def gmail_webhook():
 
         add_company_to_affinity(name, website_url)
         add_note_to_affinity(website_url, email_content)
-        #email_info["Tag"] = "Gmail Inbound"
-        #update_affinity_field(email_info)
+        add_tag_to_affinity(website_url, "Gmail Inbound")
 
-        print(f"New company out of email: {email_info}")
+        print(f"New company out of email: {website_url}")
 
     return "Gmail webhook received and processed", 200
 
@@ -158,10 +158,9 @@ def formulair_webhook():
 
         note_content = formulaire_note(formulair_info)
         add_note_to_affinity(website_url, note_content)
-        #formulair_info["Tag"] = "Website Inbound"
-        #update_affinity_field(formulair_info)
+        add_tag_to_affinity(website_url, "Formulair Inbound")
 
-        print(f"New form submission: {formulair_info}")
+        print(f"New form submission: {website_url}")
 
     return "Formulair webhook received and processed", 200
 
