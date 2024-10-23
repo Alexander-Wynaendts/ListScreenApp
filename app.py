@@ -58,6 +58,10 @@ def affinity_webhook():
                     lemlist_export(company_info)
 
                     website_url = company_info.get("Website URL", "")
+                    status_update = {"Website URL": website_url, "Status": "In Email Flow"}
+                    update_affinity_field(status_update)
+
+                    website_url = company_info.get("Website URL", "")
                     print(f'Status "To be contacted": {website_url}')
 
         return "Affinity webhook received and processed", 200
@@ -177,6 +181,18 @@ def fireflies_webhook():
         print(f"New transcript from Fireflies: {data}")
 
     return "Fireflies webhook received and processed", 200
+
+@app.route('/lemlist-webhook', methods=['POST'])
+def lemlist_webhook():
+    if request.method == 'POST':
+        data = request.json
+
+        #transcript_data =
+        #fireflies_import_affinity()
+
+        print(f"New transcript from Fireflies: {data}")
+
+    return "Lemlist webhook received and processed", 200
 
 if __name__ == '__main__':
     app.run(debug=True)
