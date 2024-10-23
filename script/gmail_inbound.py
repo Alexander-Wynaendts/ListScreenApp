@@ -42,10 +42,8 @@ def gmail_inbound(email_info):
 <!DOCTYPE html>
 <html>
 <body>
-    <h1>OBJECT:</h1>
     <p>{subject}</p>
     <br>
-    <h2>CONTENT:</h2>
     <p>{html_body}</p>
 </body>
 </html>
