@@ -13,7 +13,21 @@ def gmail_inbound(email_info):
 
     # Extract the domain from the email address
     if '@' in sender_email:
+
+        company_info["Email"] = sender_email
+
+        local_part = sender_email.split('@')[0]  # The part before the '@'
         domain = sender_email.split('@')[1].lower()
+
+        # Extract first and last name
+        if '.' in local_part:
+            first_name, last_name = local_part.split('.', 1)
+            company_info["First Name"] = first_name.capitalize()
+            company_info["Last Name"] = last_name.capitalize()
+        else:
+            company_info["First Name"] = ""
+            company_info["Last Name"] = local_part.capitalize()
+
         # List of common email domains to exclude
         common_domains = [
             'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com',
