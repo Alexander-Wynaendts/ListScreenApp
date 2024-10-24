@@ -42,6 +42,7 @@ def affinity_webhook():
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
+                    print(website_url)
 
                     website_data = website_scraping(website_url)
                     company_screened = website_analysis(website_data)
