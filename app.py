@@ -175,13 +175,12 @@ def formulair_webhook():
             add_people_to_affinity(first_name, last_name, email, website_url)
 
         note_content = formulaire_note(formulair_info)
-        print(note_content)
         add_note_to_affinity(website_url, note_content)
-        add_tag_to_affinity(website_url, "Formulair Inbound")
+        add_tag_to_affinity(website_url, "Form Inbound")
 
         print(f"New form submission: {website_url}")
 
-    return "Formulair webhook received and processed", 200
+    return "Form webhook received and processed", 200
 
 @app.route('/fireflies-webhook', methods=['POST'])
 def fireflies_webhook():
