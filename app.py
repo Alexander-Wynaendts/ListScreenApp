@@ -43,8 +43,6 @@ def affinity_webhook():
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
 
-                    print(f"THE WEBSITE {website_url}")
-
                     website_data = website_scraping(website_url)
                     company_screened = website_analysis(website_data)
                     company_screened["Website URL"] = website_url
@@ -81,6 +79,10 @@ def gmail_webhook():
         email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
         email_info = gmail_inbound(email_info)
 
+        first_name = email_info.get("First Name")
+        last_name = email_info.get("Last Name")
+        email = email_info.get("Email")
+
         name = email_info.get("Name")
         website_url = email_info.get("Website URL")
         email_content = email_info.get("Email Content")
@@ -89,6 +91,8 @@ def gmail_webhook():
             add_company_to_affinity(name, website_url)
             add_note_to_affinity(website_url, email_content)
             add_tag_to_affinity(website_url, "Gmail Inbound")
+
+            add_people_to_affinity(first_name, last_name, email, website_url)
 
             print(f"New company out of email: {website_url}")
 
