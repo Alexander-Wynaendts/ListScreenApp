@@ -90,7 +90,7 @@ def gmail_webhook():
             add_note_to_affinity(website_url, email_content)
             add_tag_to_affinity(website_url, "Gmail Inbound")
 
-        print(f"New company out of email: {website_url}")
+            print(f"New company out of email: {website_url}")
 
     return "Gmail webhook received and processed", 200
 
