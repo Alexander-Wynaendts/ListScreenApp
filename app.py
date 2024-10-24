@@ -187,10 +187,13 @@ def lemlist_webhook():
     if request.method == 'POST':
         data = request.json
 
-        #transcript_data =
-        #fireflies_import_affinity()
+        website_url = data.get("companyDomain", "")
+        company_status = "Contacted"
 
-        print(f"New transcript from Fireflies: {data}")
+        company_udpate = {"Website URL": website_url, "Status": company_status}
+        update_affinity_field(company_udpate)
+
+        print(f"Lemlist email flow running: {website_url}")
 
     return "Lemlist webhook received and processed", 200
 
