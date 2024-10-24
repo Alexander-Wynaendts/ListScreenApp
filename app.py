@@ -83,9 +83,11 @@ def gmail_webhook():
         website_url = email_info.get("Website URL")
         email_content = email_info.get("Email Content")
 
-        add_company_to_affinity(name, website_url)
-        add_note_to_affinity(website_url, email_content)
-        add_tag_to_affinity(website_url, "Gmail Inbound")
+        print(f"KULEUVEN {website_url}")
+        if website_url == "":
+            add_company_to_affinity(name, website_url)
+            add_note_to_affinity(website_url, email_content)
+            add_tag_to_affinity(website_url, "Gmail Inbound")
 
         print(f"New company out of email: {website_url}")
 
