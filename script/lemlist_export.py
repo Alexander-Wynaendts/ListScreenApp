@@ -26,7 +26,7 @@ def lemlist_export(company_info):
         first_name = contact.get('FirstName', '')
         last_name = contact.get('LastName', '')
         email = contact.get('Email', '')
-        params_value = 'false' if "@" in email else 'true'
+        params_value = 'true' if email is None or "@" not in email else 'false'
 
         # Construct the API endpoint URL for each lead
         url = f"https://api.lemlist.com/api/campaigns/{campaign_id}/leads"
