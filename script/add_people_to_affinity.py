@@ -46,7 +46,4 @@ def add_people_to_affinity(first_name, last_name, email, website_url):
         url = "https://api.affinity.co/persons"
         data = {"first_name": first_name, "last_name": last_name, "emails": [email], "organization_ids": [organization_id]}
         response  = requests.post(url, auth=HTTPBasicAuth('', api_key), json=data)
-        print("ADDED", email)
-        print(response.json())
-
     return
