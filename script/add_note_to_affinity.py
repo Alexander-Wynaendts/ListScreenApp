@@ -30,18 +30,14 @@ def add_note_to_affinity(website_url, note_content):
             break
 
     if note_exists and note_id:
-        print("Update")
         # Update the existing note
         update_url = f"https://api.affinity.co/notes/{note_id}"
         data = {'content': note_content}
         response = requests.put(update_url, auth=HTTPBasicAuth('', api_key), json=data)
-        print(response)
     else:
-        print("CREATING")
         # Create a new note if no existing note is found
         create_url = "https://api.affinity.co/notes"
         data = {'content': note_content, 'type': 2, 'organization_ids': [organization_id]}
         response = requests.post(create_url, auth=HTTPBasicAuth('', api_key), json=data)
-        print(response)
 
     return
