@@ -43,6 +43,8 @@ def affinity_webhook():
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
 
+                    print(f"THE WEBSITE {website_url}")
+
                     website_data = website_scraping(website_url)
                     company_screened = website_analysis(website_data)
                     company_screened["Website URL"] = website_url
@@ -83,7 +85,6 @@ def gmail_webhook():
         website_url = email_info.get("Website URL")
         email_content = email_info.get("Email Content")
 
-        print(f"KULEUVEN {website_url}")
         if website_url == "":
             add_company_to_affinity(name, website_url)
             add_note_to_affinity(website_url, email_content)
