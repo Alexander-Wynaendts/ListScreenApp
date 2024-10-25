@@ -10,6 +10,7 @@ from script.update_affinity_field import update_affinity_field
 from script.formulaire_note import formulaire_note
 from script.add_note_to_affinity import add_note_to_affinity
 from script.add_tag_to_affinity import add_tag_to_affinity
+from script.fireflies_transcript_processing import fireflies_transcript_processing
 from script.lemlist_export import lemlist_export
 
 app = Flask(__name__)
@@ -18,8 +19,6 @@ app = Flask(__name__)
 def affinity_webhook():
     if request.method == 'POST':
         data = request.json
-
-        print(data)
 
         # Check for organization.created event
         if data.get('type') == 'organization.created':
@@ -44,7 +43,6 @@ def affinity_webhook():
                 if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
-                    print(website_url)
 
                     website_data = website_scraping(website_url)
                     company_screened = website_analysis(website_data)
@@ -58,9 +56,14 @@ def affinity_webhook():
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     entry_data = affinity_company_data(body)
                     company_info = entry_data
+                    website_url = company_info.get("Website URL", "")
+
+                    if not company_info.get('Contacts', []):
+                        status_update = {"Website URL": website_url, "Status": "To Screen"}
+                        update_affinity_field(status_update)
+
                     lemlist_export(company_info)
 
-                    website_url = company_info.get("Website URL", "")
                     status_update = {"Website URL": website_url, "Status": "In Email Flow"}
                     update_affinity_field(status_update)
 
@@ -190,8 +193,12 @@ def fireflies_webhook():
     if request.method == 'POST':
         data = request.json
 
-        #transcript_data =
-        #fireflies_import_affinity()
+        #if data.get("eventType", "") == "Transcription completed":
+        #    transcript_id = data.get("meetingId", "")
+        #    fireflies_note = fireflies_transcript_processing(transcript_id)
+        #
+        #    website_url = data.get("website_url", "")
+        #    add_note_to_affinity(website_url, fireflies_note)
 
         print(f"New transcript from Fireflies: {data}")
 
