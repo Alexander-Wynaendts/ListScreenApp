@@ -40,7 +40,7 @@ def affinity_webhook():
             body = data.get('body', {})
             field_name = body.get('field', {}).get('name', '')
             if field_name == 'Status':
-                if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
+                if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "Leads":
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
 
@@ -51,7 +51,7 @@ def affinity_webhook():
 
                     update_affinity_field(company_screened)
 
-                    print(f'Status "New" update: {website_url}')
+                    print(f'Status "Leads" update: {website_url}')
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     entry_data = affinity_company_data(body)

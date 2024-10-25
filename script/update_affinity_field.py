@@ -4,7 +4,7 @@ import os
 
 api_key = os.getenv("AFFINITY_API_KEY")
 
-list_id = 271745
+list_id = 219127
 
 def update_affinity_field(company_info):
 
