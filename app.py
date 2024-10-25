@@ -19,6 +19,8 @@ def affinity_webhook():
     if request.method == 'POST':
         data = request.json
 
+        print(data)
+
         # Check for organization.created event
         if data.get('type') == 'organization.created':
             body = data.get('body', {})
