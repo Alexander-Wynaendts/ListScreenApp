@@ -193,12 +193,11 @@ def fireflies_webhook():
     if request.method == 'POST':
         data = request.json
 
-        #if data.get("eventType", "") == "Transcription completed":
-        #    transcript_id = data.get("meetingId", "")
-        #    fireflies_note = fireflies_transcript_processing(transcript_id)
-        #
-        #    website_url = data.get("website_url", "")
-        #    add_note_to_affinity(website_url, fireflies_note)
+        if data.get("eventType", "") == "Transcription completed":
+            transcript_id = data.get("meetingId", "")
+            fireflies_note, website_url = fireflies_transcript_processing(transcript_id)
+
+            add_note_to_affinity(website_url, fireflies_note)
 
         print(f"New transcript from Fireflies: {data}")
 
