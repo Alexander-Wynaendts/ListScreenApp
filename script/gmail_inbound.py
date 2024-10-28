@@ -11,12 +11,21 @@ def gmail_inbound(email_info):
     else:
         sender_email = sender
 
+    # Check if email is forwarded and extract the original sender's email
+    subject = email_info.get('subject', '').strip()
+    plain_body = email_info.get('plain_body', '').strip()
+    html_body = email_info.get('html_body', '').strip()
+
+    if "Fwd:" in subject:
+        # Extract the email from the forwarded message in plain_body
+        forwarded_match = re.search(r"From:\s*(.*?@.*?)>", plain_body)
+        if forwarded_match:
+            sender_email = forwarded_match.group(1).strip()
+
     # Extract the domain from the email address
     if '@' in sender_email:
-
         company_info["Email"] = sender_email
-
-        local_part = sender_email.split('@')[0]  # The part before the '@'
+        local_part = sender_email.split('@')[0]
         domain = sender_email.split('@')[1].lower()
 
         # Extract first and last name
@@ -49,9 +58,13 @@ def gmail_inbound(email_info):
         company_info["Website URL"] = ''
         company_info["Name"] = ''
 
-    subject = email_info.get('subject', '').strip()
-    html_body = email_info.get('html_body', '').strip()
+    # Extract the original subject from the forwarded email if it exists
+    forwarded_subject_match = re.search(r"Subject:\s*(.*?)\n", plain_body)
+    if forwarded_subject_match:
+        original_subject = forwarded_subject_match.group(1).strip()
+        subject = original_subject if original_subject else subject
 
+    # Create HTML content
     the_string = f"""
 <!DOCTYPE html>
 <html>
@@ -62,7 +75,6 @@ def gmail_inbound(email_info):
 </body>
 </html>
 """
-
     company_info["Email Content"] = the_string
 
     return company_info

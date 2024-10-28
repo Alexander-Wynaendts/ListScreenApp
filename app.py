@@ -94,6 +94,9 @@ def gmail_webhook():
             website_url = email_info.get("Website URL")
             email_content = email_info.get("Email Content")
 
+            print(name, website_url)
+            print(email_content)
+
             if website_url != "":
                 add_company_to_affinity(name, website_url)
                 add_note_to_affinity(website_url, email_content)
