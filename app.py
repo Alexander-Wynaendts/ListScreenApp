@@ -104,7 +104,7 @@ def gmail_webhook():
 
             #    add_people_to_affinity(first_name, last_name, email, website_url)
 
-                print(f"New company out of email: {website_url}")
+            #    print(f"New company out of email: {website_url}")
             return "Success", 200
         else:
             return "Method not allowed", 405
