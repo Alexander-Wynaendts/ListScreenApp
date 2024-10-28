@@ -204,8 +204,8 @@ def fireflies_webhook():
 
     return "Fireflies webhook received and processed", 200
 
-@app.route('/lemlist-webhook', methods=['POST'])
-def lemlist_webhook():
+@app.route('/lemlist-webhook-contacted', methods=['POST'])
+def lemlist_webhook_contacted():
     if request.method == 'POST':
         data = request.json
 
@@ -216,6 +216,21 @@ def lemlist_webhook():
         update_affinity_field(company_udpate)
 
         print(f"Lemlist email flow running: {website_url}")
+
+    return "Lemlist webhook received and processed", 200
+
+@app.route('/lemlist-webhook-lost', methods=['POST'])
+def lemlist_webhook_lost():
+    if request.method == 'POST':
+        data = request.json
+
+        website_url = data.get("companyDomain", "")
+        company_status = "No answer"
+
+        company_udpate = {"Website URL": website_url, "Status": company_status}
+        update_affinity_field(company_udpate)
+
+        print(f"Lemlist email flow done: {website_url}")
 
     return "Lemlist webhook received and processed", 200
 
