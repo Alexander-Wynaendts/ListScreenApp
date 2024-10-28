@@ -203,7 +203,7 @@ def fireflies_webhook():
 
     return "Fireflies webhook received and processed", 200
 
-@app.route('/lemlist-webhook-contacted', methods=['POST'])
+@app.route('/lemlist-webhook-run', methods=['POST'])
 def lemlist_webhook_contacted():
     if request.method == 'POST':
         data = request.json
