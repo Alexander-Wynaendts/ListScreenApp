@@ -97,12 +97,12 @@ def gmail_webhook():
             print(name, website_url)
             print(email_content)
 
-            if website_url != "":
-                add_company_to_affinity(name, website_url)
-                add_note_to_affinity(website_url, email_content)
-                add_tag_to_affinity(website_url, "Gmail Inbound")
+            #if website_url != "":
+            #    add_company_to_affinity(name, website_url)
+            #    add_note_to_affinity(website_url, email_content)
+            #    add_tag_to_affinity(website_url, "Gmail Inbound")
 
-                add_people_to_affinity(first_name, last_name, email, website_url)
+            #    add_people_to_affinity(first_name, last_name, email, website_url)
 
                 print(f"New company out of email: {website_url}")
             return "Success", 200
