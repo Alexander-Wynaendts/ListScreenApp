@@ -25,8 +25,8 @@ def affinity_webhook():
             print("NEW ENTRY DATA")
             print(data)
             body = data.get('body', {})
-            name = body.get('name', '')
-            website_url = body.get('domain', '')
+            name = body.get("entity", {}).get('name', '')
+            website_url = body.get("entity", {}).get('domain', '')
 
             website_data = website_scraping(website_url)
             company_screened = website_analysis(website_data)
