@@ -208,8 +208,6 @@ def lemlist_webhook_contacted():
     if request.method == 'POST':
         data = request.json
 
-        print(data)
-
         website_url = data.get("companyDomain", "")
         company_status = "Contacted"
 
