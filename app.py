@@ -33,7 +33,7 @@ def affinity_webhook():
 
             update_affinity_field(company_screened)
 
-            print(f"New company: {website_url}")
+            print(f"New company in 'Deal Flow': {website_url}")
 
         # Check for field_value.updated event and the status field
         if data.get('type') == 'field_value.updated':
@@ -71,40 +71,34 @@ def affinity_webhook():
 
 @app.route('/gmail-webhook', methods=['POST'])
 def gmail_webhook():
-    try:
-        if request.method == 'POST':
-            data = request.json
+    if request.method == 'POST':
+        data = request.json
 
-            sender = data.get('from', '')
-            subject = data.get('subject', '')
-            plain_body = data.get('plainBody', '')
-            html_body = data.get('htmlBody', '')
+        sender = data.get('from', '')
+        subject = data.get('subject', '')
+        plain_body = data.get('plainBody', '')
+        html_body = data.get('htmlBody', '')
 
-            email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
-            email_info = gmail_inbound(email_info)
+        email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
+        email_info = gmail_inbound(email_info)
 
-            first_name = email_info.get("First Name")
-            last_name = email_info.get("Last Name")
-            email = email_info.get("Email")
+        first_name = email_info.get("First Name")
+        last_name = email_info.get("Last Name")
+        email = email_info.get("Email")
 
-            name = email_info.get("Name")
-            website_url = email_info.get("Website URL")
-            email_content = email_info.get("Email Content")
+        name = email_info.get("Name")
+        website_url = email_info.get("Website URL")
+        email_content = email_info.get("Email Content")
 
-            if website_url != "":
-                add_company_to_affinity(name, website_url)
-                add_note_to_affinity(website_url, email_content)
-                add_tag_to_affinity(website_url, "Gmail Inbound")
+        if website_url != "":
+            add_company_to_affinity(name, website_url)
+            add_note_to_affinity(website_url, email_content)
+            add_tag_to_affinity(website_url, "Gmail Inbound")
 
-                add_people_to_affinity(first_name, last_name, email, website_url)
+            add_people_to_affinity(first_name, last_name, email, website_url)
 
-                print(f"New company out of email: {website_url}")
-            return "Success", 200
-        else:
-            return "Method not allowed", 405
-    except Exception as e:
-        app.logger.error(f"Error processing the webhook: {str(e)}")
-        return "Internal Server Error", 500
+            print(f"New company out of email: {website_url}")
+        return "Success", 200
 
 @app.route('/formulair-webhook', methods=['POST'])
 def formulair_webhook():
