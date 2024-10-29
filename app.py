@@ -21,7 +21,7 @@ def affinity_webhook():
         data = request.json
 
         # Check for organization.created event
-        if data.get('type') == 'organization.created':
+        if data.get('type') == 'list_entry.created':
             body = data.get('body', {})
             name = body.get('name', '')
             website_url = body.get('domain', '')
