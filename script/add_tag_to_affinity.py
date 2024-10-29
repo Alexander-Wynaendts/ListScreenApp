@@ -19,7 +19,7 @@ def add_tag_to_affinity(website_url, tag):
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
     fields = response.json()
     for field in fields:
-        if field.get("name", "") == "Tag":
+        if field.get("name", "") == "Source":
             field_id = field.get("id", "")
             break
 
