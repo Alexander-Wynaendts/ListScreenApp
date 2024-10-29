@@ -1,4 +1,5 @@
 from flask import Flask, request
+import time
 
 from script.gmail_inbound import gmail_inbound
 from script.affinity_company_data import affinity_company_data
@@ -92,6 +93,7 @@ def gmail_webhook():
 
         if website_url != "":
             add_company_to_affinity(name, website_url)
+            time.sleep(10)
             add_note_to_affinity(website_url, email_content)
             add_tag_to_affinity(website_url, "Gmail Inbound")
 
