@@ -22,6 +22,8 @@ def affinity_webhook():
 
         # Check for organization.created event
         if data.get('type') == 'list_entry.created':
+            print("NEW ENTRY DATA")
+            print(data)
             body = data.get('body', {})
             name = body.get('name', '')
             website_url = body.get('domain', '')
