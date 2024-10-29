@@ -29,7 +29,7 @@ def affinity_webhook():
             website_data = website_scraping(website_url)
             company_screened = website_analysis(website_data)
             company_screened["Website URL"] = website_url
-            company_screened['Status'] = "To Screen"
+            company_screened['Status'] = "To screen"
 
             update_affinity_field(company_screened)
 
@@ -40,18 +40,18 @@ def affinity_webhook():
             body = data.get('body', {})
             field_name = body.get('field', {}).get('name', '')
             if field_name == 'Status':
-                if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "Leads":
+                if body.get('value', {}).get('text', '') is None or body.get('value', {}).get('text', '') == "New":
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
 
                     website_data = website_scraping(website_url)
                     company_screened = website_analysis(website_data)
                     company_screened["Website URL"] = website_url
-                    company_screened['Status'] = "To Screen"
+                    company_screened['Status'] = "To screen"
 
                     update_affinity_field(company_screened)
 
-                    print(f'Status "Leads" update: {website_url}')
+                    print(f'Status "New" update: {website_url}')
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
                     entry_data = affinity_company_data(body)
@@ -59,7 +59,7 @@ def affinity_webhook():
                     website_url = company_info.get("Website URL", "")
 
                     if not company_info.get('Contacts', []):
-                        status_update = {"Website URL": website_url, "Status": "To Screen"}
+                        status_update = {"Website URL": website_url, "Status": "To screen"}
                         update_affinity_field(status_update)
 
                     lemlist_export(company_info)
