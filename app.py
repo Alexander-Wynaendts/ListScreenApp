@@ -64,9 +64,6 @@ def affinity_webhook():
 
                     lemlist_export(company_info)
 
-                    status_update = {"Website URL": website_url, "Status": "In email flow"}
-                    update_affinity_field(status_update)
-
                     website_url = company_info.get("Website URL", "")
                     print(f'Status "To be contacted": {website_url}')
 
