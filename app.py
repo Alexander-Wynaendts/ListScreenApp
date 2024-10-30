@@ -94,7 +94,7 @@ def gmail_webhook():
 
         if website_url != "":
             add_company_to_affinity(name, website_url)
-           #time.sleep(10)
+            time.sleep(10)
             add_note_to_affinity(website_url, email_content)
             source = "Gmail Inbound"
             inbound_boolean = "Yes"
@@ -171,7 +171,7 @@ def formulair_webhook():
 
         # Add company to Affinity using name and website_url
         add_company_to_affinity(name, website_url)
-        #time.sleep(10)
+        time.sleep(10)
 
         # Iterate over the first_names, last_names, and emails lists
         for first_name, last_name, email in zip(first_names, last_names, emails):
