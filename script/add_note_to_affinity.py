@@ -5,6 +5,13 @@ import os
 api_key = os.getenv("AFFINITY_API_KEY")
 
 def add_note_to_affinity(website_url, note_content):
+
+    prefixes = ['https://', 'http://', 'https://www.', 'http://www.', 'www.']
+    for prefix in prefixes:
+        if website_url.startswith(prefix):
+            website_url = website_url[len(prefix):]
+            break
+
     # Fetch the organization by its website URL
     url = f"https://api.affinity.co/organizations?term={website_url}"
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
