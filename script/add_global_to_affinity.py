@@ -4,7 +4,7 @@ import os
 
 api_key = os.getenv("AFFINITY_API_KEY")
 
-def add_source_to_affinity(website_url, source, inbound_boolean):
+def add_global_to_affinity(website_url, source, inbound_boolean):
     # Fetch the organization ID by domain
     url = f"https://api.affinity.co/organizations?term={website_url}"
     response = requests.get(url, auth=HTTPBasicAuth('', api_key))
