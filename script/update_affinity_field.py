@@ -62,9 +62,16 @@ def update_affinity_field(company_info):
             organization_fields = response.json()
             field_value_id = None
             for field_value in organization_fields:
-                if field_value.get("field_id") == field_id:
-                    field_value_id = field_value.get("id")
-                    break
+                try:
+                    # Vérifiez d'abord le champ "field_id" et assignez "field_value_id" si c'est un match
+                    if field_value.get("field_id") == field_id:
+                        field_value_id = field_value.get("id")
+                        break
+                except Exception as e:
+                    print("FIELD VALUE PROBLEM")
+                    print(field_value)
+                    print("Exception:", e)
+
             if field_value_id:
                 # Update existing field value
                 url = f"https://api.affinity.co/field-values/{field_value_id}"
