@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import re
 import os
-import time
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 scraping_bee_api = os.getenv("SCRAPING_BEE")
@@ -25,17 +24,15 @@ def page_scraping(website_url):
 
     prefixes = ['https://', 'https://www.', 'http://', 'http://www.']
 
-    def scrape_page(url, max_retries=2, wait_time=5):
-        for attempt in range(max_retries):
-            try:
-                response = client.get(url)
-                if response.status_code == 200:
-                    return BeautifulSoup(response.content, 'html.parser')
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed for {url}: {e}")
-            # Wait before retrying
-            time.sleep(wait_time)
-        print(f"Failed to retrieve content from {url} after {max_retries} attempts.")
+    def scrape_page(url, timeout=10):
+        try:
+            response = client.get(url, timeout=timeout)
+            if response.status_code == 200:
+                return BeautifulSoup(response.content, 'html.parser')
+            else:
+                print(f"Non-200 status code for {url}: {response.status_code}")
+        except Exception as e:
+            print(f"Failed to retrieve content from {url} within {timeout} seconds: {e}")
         return None
 
     # Try the different prefixes
