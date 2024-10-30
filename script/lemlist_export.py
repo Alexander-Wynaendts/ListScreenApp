@@ -2,16 +2,25 @@ import requests
 from requests.auth import HTTPBasicAuth
 import os
 
-# Define your campaign name and API key
-campaign_name = "Outreach Automation"
+# Define your API key
 api_key = os.getenv("LEMLIST_API_KEY")
 
-def lemlist_export(company_info):
+def lemlist_export(company_info, campaign):
+    # Determine the campaign name based on input
+    if campaign == "Inbound":
+        campaign_name = "Inbound Automation"
+    elif campaign == "Outbound":
+        campaign_name = "Outbound Automation"
+    else:
+        campaign_name = "Outreach Automation"  # Default campaign if none specified
+
     # URL to get the list of campaigns
     campaigns_url = "https://api.lemlist.com/api/campaigns"
     response = requests.get(campaigns_url, auth=HTTPBasicAuth('', api_key))
     campaign_lists = response.json()
     campaign_id = None
+
+    # Find the campaign ID based on the campaign name
     for campaign_list in campaign_lists:
         if campaign_list.get("name", "") == campaign_name:
             campaign_id = campaign_list.get("_id", "")
@@ -31,7 +40,13 @@ def lemlist_export(company_info):
         # Construct the API endpoint URL for each lead
         url = f"https://api.lemlist.com/api/campaigns/{campaign_id}/leads"
         params = {'findEmail': params_value, 'verifyEmail': params_value}
-        payload = {"firstName": first_name, "lastName": last_name, "email": email, "companyName": company_name, "companyDomain": company_domain}
-        requests.request("POST", url, auth=HTTPBasicAuth('', api_key), params=params, json=payload)
+        payload = {
+            "firstName": first_name,
+            "lastName": last_name,
+            "email": email,
+            "companyName": company_name,
+            "companyDomain": company_domain
+        }
+        requests.post(url, auth=HTTPBasicAuth('', api_key), params=params, json=payload)
 
     return

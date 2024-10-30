@@ -55,16 +55,17 @@ def affinity_webhook():
                     print(f'Status "New" update: {website_url}')
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
-                    print(body)
-                    entry_data = affinity_company_data(body)
-                    company_info = entry_data
+                    company_info = affinity_company_data(body)
                     website_url = company_info.get("Website URL", "")
 
                     if not company_info.get('Contacts', []):
                         status_update = {"Website URL": website_url, "Status": "To screen"}
                         update_affinity_field(status_update)
 
-                    lemlist_export(company_info)
+                    if company_info.get("Inbound Boolean", "") == "Yes":
+                        lemlist_export(company_info, "Inbound")
+                    else:
+                        lemlist_export(company_info, "Outbound")
 
                     website_url = company_info.get("Website URL", "")
                     print(f'Status "To be contacted": {website_url}')
