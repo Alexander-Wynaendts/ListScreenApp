@@ -10,7 +10,7 @@ from script.add_people_to_affinity import add_people_to_affinity
 from script.update_affinity_field import update_affinity_field
 from script.formulaire_note import formulaire_note
 from script.add_note_to_affinity import add_note_to_affinity
-from script.add_tag_to_affinity import add_tag_to_affinity
+from script.add_global_to_affinity import add_global_to_affinity
 from script.fireflies_transcript_processing import fireflies_transcript_processing
 from script.lemlist_export import lemlist_export
 
@@ -94,9 +94,11 @@ def gmail_webhook():
 
         if website_url != "":
             add_company_to_affinity(name, website_url)
-            time.sleep(10)
+           #time.sleep(10)
             add_note_to_affinity(website_url, email_content)
-            add_tag_to_affinity(website_url, "Gmail Inbound")
+            source = "Gmail Inbound"
+            inbound_boolean = "Yes"
+            add_global_to_affinity(website_url, source, inbound_boolean)
 
             add_people_to_affinity(first_name, last_name, email, website_url)
 
@@ -169,7 +171,7 @@ def formulair_webhook():
 
         # Add company to Affinity using name and website_url
         add_company_to_affinity(name, website_url)
-        time.sleep(10)
+        #time.sleep(10)
 
         # Iterate over the first_names, last_names, and emails lists
         for first_name, last_name, email in zip(first_names, last_names, emails):
@@ -177,7 +179,9 @@ def formulair_webhook():
 
         note_content = formulaire_note(formulair_info)
         add_note_to_affinity(website_url, note_content)
-        add_tag_to_affinity(website_url, "Form Inbound")
+        source = "Form Inbound"
+        inbound_boolean = "Yes"
+        add_global_to_affinity(website_url, source, inbound_boolean)
 
         print(f"New form submission: {website_url}")
 
