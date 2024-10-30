@@ -21,6 +21,8 @@ def affinity_webhook():
     if request.method == 'POST':
         data = request.json
 
+        print(data)
+
         # Check for organization.created event
         if data.get('type') == 'list_entry.created':
             body = data.get('body', {})
@@ -73,8 +75,8 @@ def affinity_webhook():
 
         return "Affinity webhook received and processed", 200
 
-@app.route('/gmail-webhook', methods=['POST'])
-def gmail_webhook():
+@app.route('/gmail-webhook-initial', methods=['POST'])
+def gmail_webhook_initial():
     if request.method == 'POST':
         data = request.json
 
@@ -104,6 +106,13 @@ def gmail_webhook():
             add_people_to_affinity(first_name, last_name, email, website_url)
 
             print(f"New company out of email: {website_url}")
+        return "Success", 200
+
+@app.route('/gmail-webhook-response', methods=['POST'])
+def gmail_webhook_response():
+    if request.method == 'POST':
+        data = request.json
+        print(data)
         return "Success", 200
 
 @app.route('/formulair-webhook', methods=['POST'])
