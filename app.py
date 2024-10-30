@@ -55,8 +55,13 @@ def affinity_webhook():
                     print(f'Status "New" update: {website_url}')
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
+
+                    print("NEW UPDATE")
+
                     company_info = affinity_company_data(body)
                     website_url = company_info.get("Website URL", "")
+
+                    print(company_info)
 
                     if not company_info.get('Contacts', []):
                         status_update = {"Website URL": website_url, "Status": "To screen"}
