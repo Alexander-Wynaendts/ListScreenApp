@@ -9,10 +9,10 @@ def lemlist_export(company_info, campaign):
     # Determine the campaign name based on input
     if campaign == "Inbound":
         campaign_name = "Inbound Automation"
+        linkedin_params_value = 'false'
     elif campaign == "Outbound":
         campaign_name = "Outbound Automation"
-    else:
-        campaign_name = "Outreach Automation"  # Default campaign if none specified
+        linkedin_params_value = 'true'
 
     # URL to get the list of campaigns
     campaigns_url = "https://api.lemlist.com/api/campaigns"
@@ -35,11 +35,11 @@ def lemlist_export(company_info, campaign):
         first_name = contact.get('FirstName', '')
         last_name = contact.get('LastName', '')
         email = contact.get('Email', '')
-        params_value = 'true' if email is None or "@" not in email else 'false'
+        email_params_value = 'true' if email is None or "@" not in email else 'false'
 
         # Construct the API endpoint URL for each lead
         url = f"https://api.lemlist.com/api/campaigns/{campaign_id}/leads"
-        params = {'findEmail': params_value, 'verifyEmail': params_value}
+        params = {'findEmail': email_params_value, 'verifyEmail': email_params_value, 'linkedinEnrichment': linkedin_params_value}
         payload = {
             "firstName": first_name,
             "lastName": last_name,
