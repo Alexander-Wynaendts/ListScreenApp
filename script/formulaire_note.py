@@ -61,7 +61,6 @@ def formulaire_note(formulair_info):
         html_lines.append("<h4>Contact Persons</h4>")
         # Iterate over the lists simultaneously
         for first_name, last_name, email in zip(first_names, last_names, emails):
-            html_lines.append("<p>")
             # Full Name
             full_name = f"{first_name} {last_name}".strip()
             if full_name:
@@ -69,7 +68,6 @@ def formulaire_note(formulair_info):
             # Email
             if email:
                 html_lines.append(f"<strong>Email:</strong> {email}")
-            html_lines.append("</p>")
 
     # Combine all HTML lines into a single string
     note_content = '\n'.join(html_lines)
