@@ -94,7 +94,6 @@ def gmail_webhook():
 
         if website_url != "":
             add_company_to_affinity(name, website_url)
-            time.sleep(10)
             add_note_to_affinity(website_url, email_content)
             source = "Gmail Inbound"
             inbound_boolean = "Yes"

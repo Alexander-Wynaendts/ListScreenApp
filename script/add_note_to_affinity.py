@@ -47,6 +47,4 @@ def add_note_to_affinity(website_url, note_content):
         data = {'content': note_content, 'type': 2, 'organization_ids': [organization_id]}
         response = requests.post(create_url, auth=HTTPBasicAuth('', api_key), json=data)
 
-    print(response.json())
-
     return
