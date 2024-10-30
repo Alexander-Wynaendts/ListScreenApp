@@ -3,7 +3,7 @@ def formulaire_note(formulair_info):
     html_lines = []
 
     # Company Information
-    html_lines.append("<h2>Company Information</h2>")
+    html_lines.append("<h4>Company Information</h4>")
 
     # Company Name
     name = formulair_info.get('Name')
@@ -40,7 +40,7 @@ def formulaire_note(formulair_info):
     funding_amount = formulair_info.get('funding_amount')
     funding_close_date = formulair_info.get('funding_close_date')
     if funding_round or funding_amount or funding_close_date:
-        html_lines.append("<h3>Funding Information</h3>")
+        html_lines.append("<h4>Funding Information</h4>")
         if funding_round:
             html_lines.append(f"<p><strong>Funding Round:</strong> {funding_round}</p>")
         if funding_amount:
@@ -58,7 +58,7 @@ def formulaire_note(formulair_info):
     last_names = formulair_info.get('last_names', [])
     emails = formulair_info.get('emails', [])
     if first_names or last_names or emails:
-        html_lines.append("<h3>Contact Persons</h3>")
+        html_lines.append("<h4>Contact Persons</h4>")
         # Iterate over the lists simultaneously
         for first_name, last_name, email in zip(first_names, last_names, emails):
             html_lines.append("<p>")
