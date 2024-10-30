@@ -171,13 +171,17 @@ def formulair_webhook():
 
         # Add company to Affinity using name and website_url
         add_company_to_affinity(name, website_url)
-        time.sleep(10)
+        time.sleep(20)
 
         # Iterate over the first_names, last_names, and emails lists
         for first_name, last_name, email in zip(first_names, last_names, emails):
             add_people_to_affinity(first_name, last_name, email, website_url)
 
         note_content = formulaire_note(formulair_info)
+
+        print(website_url)
+        print(note_content)
+
         add_note_to_affinity(website_url, note_content)
         source = "Form Inbound"
         inbound_boolean = "Yes"
