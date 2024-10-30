@@ -6,14 +6,17 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def gpt_software_hardware_screen(website_data):
     prompt = f"""
-You are an expert in classifying companies' products/services as "Software" or "Hardware" based on the following dictionary of website links and their corresponding content.
-The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily a Software or Hardware company.
+You are an expert in identifying whether a company's core offerings are "Software" or "Hardware" based on provided website content. Below is a dictionary of website URLs and their corresponding content summaries, structured as link1: content1, link2: content2, etc.
 
-{website_data}
+Guidelines:
+1. Classify as "Hardware" if the primary offering involves any physical product, device, or equipment. This includes products that combine digital elements with physical components.
+2. Classify as "Software" only if the company offers purely digital solutions without any physical product. Digital solutions might include applications, SaaS platforms, online tools, and cloud-based services.
 
-Give a binary output:
+Using these criteria, output a binary classification:
 - "1" for a Software company
 - "0" for a Hardware company
+
+{website_data}
 """
 
     response = openai.ChatCompletion.create(
@@ -27,14 +30,17 @@ Give a binary output:
 
 def gpt_software_service_screen(website_data):
     prompt = f"""
-You are an expert in classifying companies as "Software" or "Service" based on the following dictionary of website links and their corresponding content.
-The dictionary is structured as link1: content1, link2: content2, etc. Based on this data, determine if the company is primarily offering Software or Service.
+You are an expert in distinguishing companies as either "SaaS" (Software as a Service) or "Service" providers, based on the information given. Below is a dictionary of website URLs and their corresponding content summaries, structured as link1: content1, link2: content2, etc.
+
+Classification Guidelines:
+1. Classify as "SaaS" if the company's primary offering is a purely software-based platform or application that customers access online, typically subscription-based and self-service, without needing direct human involvement to deliver the service.
+2. Classify as "Service" if the company’s primary offerings involve services delivered manually by individuals, such as consulting, advisory, agency work, or other human-driven activities.
+
+Provide a binary output:
+- "1" for SaaS
+- "2" for Service
 
 {website_data}
-
-Give a binary output:
-- "1" for Software
-- "2" for Service
 """
 
     response = openai.ChatCompletion.create(

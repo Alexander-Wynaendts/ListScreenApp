@@ -89,7 +89,7 @@ def page_scraping(website_url):
 def gpt_link_selection(website_links):
     link_list_text = '\n'.join(website_links)
     prompt = f"""
-From the following list of URLs on a company website, choose the 2 most relevant pages to determine if the company is a SaaS startup. Prioritize URLs that:
+From the following list of URLs on a company website, choose the 3 most relevant pages to determine if the company is a SaaS startup. Prioritize URLs that:
 
 - Clearly describe the company's product or services.
 - Provide information on pricing, subscription plans, or service delivery methods.
@@ -111,7 +111,7 @@ Return the top 2 URLs, each on a new line, with no additional text or formatting
     gpt_response = response['choices'][0]['message']['content'].strip()
 
     links = re.findall(r'(https?://[^\s]+)', gpt_response)
-    return links[:2]
+    return links[:3]
 
 def website_scraping(website_url):
     # Step 1: Scrape the landing page content and links
