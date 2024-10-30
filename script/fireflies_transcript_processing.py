@@ -3,7 +3,7 @@ import openai
 import os
 
 fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def gpt_fireflies_formatting(output):
     # Defining the prompt structure with the transcript and summary included in the content
