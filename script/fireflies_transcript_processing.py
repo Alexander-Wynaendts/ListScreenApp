@@ -1,6 +1,7 @@
 import requests
 import openai
 import os
+import re
 
 fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -70,6 +71,8 @@ HTML TEMPLATE:
 
     # Strip and directly return HTML response
     fireflies_html = response['choices'][0]['message']['content'].strip()
+    fireflies_html = re.sub(r'^"+|"+$', '', fireflies_html).strip()
+
     return fireflies_html
 
 def fireflies_transcript_processing(transcript_id):
