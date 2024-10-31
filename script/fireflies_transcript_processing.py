@@ -6,9 +6,9 @@ fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def gpt_fireflies_html_formatting(output):
-    # Defining the HTML template structure with the required content
+    # Defining the prompt with a clearer emphasis on outputting HTML only
     prompt = f"""
-You are a venture capitalist investing in early-stage B2B companies. Given the following meeting data, including meeting notes and transcript, format the data into the HTML structure below. Be concise and avoid adding any extra styles or spaces.
+You are a venture capitalist investing in early-stage B2B companies. Given the following meeting data, including meeting notes and transcript, provide a response strictly formatted in the HTML structure below, without any extra explanations or plain text. Only return HTML.
 
 Meeting Data:
 {output}
@@ -62,11 +62,13 @@ HTML TEMPLATE:
 </html>
 """
 
-    # Sending the prompt to the GPT API for analysis and formatting
+    # Sending the prompt to the GPT API for strict HTML output
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
     )
+
+    # Strip and directly return HTML response
     fireflies_html = response['choices'][0]['message']['content'].strip()
     return fireflies_html
 
