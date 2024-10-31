@@ -5,73 +5,61 @@ import os
 fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def gpt_fireflies_formatting(output):
-    # Defining the prompt structure with the transcript and summary included in the content
+def gpt_fireflies_html_formatting(output):
+    # Defining the HTML template structure with the required content
     prompt = f"""
-You are a venture capitalist investing in early-stage B2B companies. Given the following meeting data, including meeting notes and transcript, organize the data into the format below. Each question should be answered as analytically as possible, only using the provided data. Do not add any information not explicitly mentioned. Be critical in your responses and make the layout easy to copy and paste.
+You are a venture capitalist investing in early-stage B2B companies. Given the following meeting data, including meeting notes and transcript, format the data into the HTML structure below. Be concise and avoid adding any extra styles or spaces.
 
 Meeting Data:
 {output}
 
-TEMPLATE:
+HTML TEMPLATE:
 
-Summary
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meeting Summary</title>
+</head>
+<body>
+    <h4>Meeting Summary</h4>
+    <p><strong>Summary:</strong> {{Summary of the meeting}}</p>
 
-Founders
-{{List each founder with their title and a one-line description. Only list founders, not team members or advisors.}}
+    <h5>Founders</h5>
+    <p>{{List each founder with their title and a one-line description.}}</p>
 
-One-line description
-{{Provide a one-line description of what the startup does.}}
+    <h5>One-line Description</h5>
+    <p>{{A single line describing the startup's business focus.}}</p>
 
-Traction
-{{Briefly mention key metrics if provided, including ARR and projected ARR, non-recurring revenue and projected revenue, the number of pilot projects (indicating if they are paid), and any relevant extra information.}}
+    <h5>Traction</h5>
+    <p>{{Key metrics, such as ARR, pilot projects, and any additional growth indicators.}}</p>
 
-Why them?
-{{Analyze if the founders are a strong fit for the company and problem.}}
+    <h5>Why Them?</h5>
+    <p>{{Reasoning for the founders' suitability for this role.}}</p>
 
-Why now?
-{{Discuss why the product is viable now, including any recent changes in the world that may benefit it.}}
+    <h5>Why Now?</h5>
+    <p>{{Why the timing is ideal for this product.}}</p>
 
-Too hyped?
-{{Evaluate if the sector or product is overhyped, and whether the funding expectations are realistic.}}
+    <h5>Too Hyped?</h5>
+    <p>{{Assessment of the market's current hype status.}}</p>
 
-Too greedy?
-{{Assess if the founders’ growth plans are realistic and sufficiently ambitious.}}
+    <h5>Too Greedy?</h5>
+    <p>{{Evaluation of growth plans and ambition.}}</p>
 
-In-depth part:
-
-ICP
-{{Describe the Ideal Customer Profile, including company size, geography, contract size, and other relevant data.}}
-
-Addressed problem
-{{Define the problem the startup addresses, and indicate its scale.}}
-
-Team
-{{List relevant experience for each team member (up to one paragraph each).}}
-
-Market
-{{Identify the market, its size, and what the company aims to capture.}}
-
-Sales
-{{Summarize their sales pipeline, if mentioned.}}
-
-Product
-{{Provide a description of the product.}}
-
-Competition
-{{Mention any competitors and briefly describe how they are similar or different from the startup.}}
-
-Problems?
-{{List any IP or cap table issues, or other specific problems if mentioned.}}
-
-Current funding situation
-{{Summarize previous funding details, including amount, valuation, funding type, and funders if available.}}
-
-Raising funding
-{{Describe their current fundraising efforts, including the amount, funding type, valuation or equity offered, timeline, and any commitments or lead/follow search.}}
-
-Q&A
-{{List any questions and answers from the call, excluding small talk.}}
+    <h4>In-Depth Analysis</h4>
+    <ul>
+        <li><strong>ICP:</strong> {{Ideal Customer Profile}}</li>
+        <li><strong>Addressed Problem:</strong> {{Problem description and scale}}</li>
+        <li><strong>Team:</strong> {{Team's relevant experience}}</li>
+        <li><strong>Market:</strong> {{Market size and company's target capture}}</li>
+        <li><strong>Sales:</strong> {{Sales pipeline details}}</li>
+        <li><strong>Product:</strong> {{Product description}}</li>
+        <li><strong>Competition:</strong> {{Competitors and comparison}}</li>
+        <li><strong>Problems:</strong> {{Any IP, cap table, or other issues}}</li>
+        <li><strong>Current Funding Situation:</strong> {{Details of previous funding}}</li>
+        <li><strong>Raising Funding:</strong> {{Current fundraising efforts}}</li>
+    </ul>
+</body>
+</html>
 """
 
     # Sending the prompt to the GPT API for analysis and formatting
@@ -79,10 +67,10 @@ Q&A
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
     )
-    fireflies_note = response['choices'][0]['message']['content'].strip()
-    return fireflies_note
+    fireflies_html = response['choices'][0]['message']['content'].strip()
+    return fireflies_html
 
-def fireflies_transcript_processing(transcript_id):
+def fireflies_transcript_html_processing(transcript_id):
     url = 'https://api.fireflies.ai/graphql'
     headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {fireflies_api_key}'}
     query = '''
@@ -119,21 +107,16 @@ def fireflies_transcript_processing(transcript_id):
     '''
     variables = {"transcriptId": transcript_id}
     response = requests.post(url, headers=headers, json={"query": query, "variables": variables})
-
     data = response.json()
 
-    # Extract speakers
+    # Extract necessary information
     speakers = [speaker['name'] for speaker in data['data']['transcript']['speakers']]
-
-    # Extract transcript sentences
     sentences = data['data']['transcript']['sentences']
     transcript_text = [sentence['text'] for sentence in sentences]
-
-    # Extract summary
     summary = data['data']['transcript']['summary']['gist']
     bullet_summary = data['data']['transcript']['summary']['bullet_gist']
 
-    # Extract the first email not ending in '@entourage.io'
+    # Extract attendee email
     meeting_attendees = data['data']['transcript']['meeting_attendees']
     non_entourage_email = next(
         (attendee['email'] for attendee in meeting_attendees if attendee['email'] and not attendee['email'].endswith('@entourage.io')),
@@ -141,11 +124,11 @@ def fireflies_transcript_processing(transcript_id):
     )
     website_url = non_entourage_email.split('@')[1] if non_entourage_email else "No valid email found"
 
-    # Format the output and store it in a string
-    output = f"Speakers: {', '.join(speakers)}\n\nTranscript:\n"
-    output += "\n".join(f"- {sentence}" for sentence in transcript_text)
-    output += f"\n\nSummary:\n{summary}\n\nDetailed Summary:\n{bullet_summary}"
+    # Format and prepare the HTML structure
+    output = f"<strong>Speakers:</strong> {', '.join(speakers)}<br><br><strong>Transcript:</strong><br>"
+    output += "<br>".join(f"- {sentence}" for sentence in transcript_text)
+    output += f"<br><br><strong>Summary:</strong> {summary}<br><strong>Detailed Summary:</strong> {bullet_summary}"
 
-    fireflies_note = gpt_fireflies_formatting(output)
+    fireflies_html = gpt_fireflies_html_formatting(output)
 
-    return fireflies_note, website_url
+    return fireflies_html, website_url
