@@ -70,7 +70,7 @@ HTML TEMPLATE:
     fireflies_html = response['choices'][0]['message']['content'].strip()
     return fireflies_html
 
-def fireflies_transcript_html_processing(transcript_id):
+def fireflies_transcript_processing(transcript_id):
     url = 'https://api.fireflies.ai/graphql'
     headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {fireflies_api_key}'}
     query = '''
