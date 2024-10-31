@@ -38,8 +38,6 @@ def affinity_company_data(body):
             inbound_boolean_field_id = field.get("id")
             break
 
-    print(inbound_boolean_field_id)
-
     # Retrieve "Inbound Boolean" field value for the organization
     inbound_boolean_value = None
     if inbound_boolean_field_id:

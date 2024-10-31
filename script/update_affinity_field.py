@@ -70,6 +70,8 @@ def update_affinity_field(company_info):
                 except Exception as e:
                     print("FIELD VALUE PROBLEM")
                     print(field_value)
+                    print(field_value)
+                    print(field_value)
                     print("Exception:", e)
 
             if field_value_id:

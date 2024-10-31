@@ -27,14 +27,15 @@ def affinity_webhook():
             name = body.get("entity", {}).get('name', '')
             website_url = body.get("entity", {}).get('domain', '')
 
-            website_data = website_scraping(website_url)
-            company_screened = website_analysis(website_data)
-            company_screened["Website URL"] = website_url
-            company_screened['Status'] = "To screen"
+            if website_url:
+                website_data = website_scraping(website_url)
+                company_screened = website_analysis(website_data)
+                company_screened["Website URL"] = website_url
+                company_screened['Status'] = "To screen"
 
-            update_affinity_field(company_screened)
+                update_affinity_field(company_screened)
 
-            print(f"New company in 'Deal Flow': {website_url}")
+                print(f"New company in 'Deal Flow': {website_url}")
 
         # Check for field_value.updated event and the status field
         if data.get('type') == 'field_value.updated':
@@ -45,31 +46,36 @@ def affinity_webhook():
                     entry_data = affinity_company_data(body)
                     website_url = entry_data.get("Website URL")
 
-                    website_data = website_scraping(website_url)
-                    company_screened = website_analysis(website_data)
-                    company_screened["Website URL"] = website_url
-                    company_screened['Status'] = "To screen"
+                    if website_url:
+                        website_data = website_scraping(website_url)
+                        company_screened = website_analysis(website_data)
+                        company_screened["Website URL"] = website_url
+                        company_screened['Status'] = "To screen"
 
-                    update_affinity_field(company_screened)
+                        update_affinity_field(company_screened)
 
-                    print(f'Status "New" update: {website_url}')
+                        print(f'Status "New" update: {website_url}')
+                    else:
+                        print("NO URL")
+                        print(entry_data, website_url)
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
 
                     company_info = affinity_company_data(body)
                     website_url = company_info.get("Website URL", "")
 
-                    if not company_info.get('Contacts', []):
-                        status_update = {"Website URL": website_url, "Status": "To screen"}
-                        update_affinity_field(status_update)
+                    if website_url != "":
+                        if not company_info.get('Contacts', []):
+                            status_update = {"Website URL": website_url, "Status": "To screen"}
+                            update_affinity_field(status_update)
 
-                    if company_info.get("Inbound Boolean", "") == "Yes":
-                        lemlist_export(company_info, "Inbound")
-                    else:
-                        lemlist_export(company_info, "Outbound")
+                        if company_info.get("Inbound Boolean", "") == "Yes":
+                            lemlist_export(company_info, "Inbound")
+                        else:
+                            lemlist_export(company_info, "Outbound")
 
-                    website_url = company_info.get("Website URL", "")
-                    print(f'Status "To be contacted": {website_url}')
+                        website_url = company_info.get("Website URL", "")
+                        print(f'Status "To be contacted": {website_url}')
 
         return "Affinity webhook received and processed", 200
 
