@@ -55,9 +55,6 @@ def affinity_webhook():
                         update_affinity_field(company_screened)
 
                         print(f'Status "New" update: {website_url}')
-                    else:
-                        print("NO URL")
-                        print(entry_data, website_url)
 
                 if body.get('value', {}).get('text', '') == 'To be contacted':
 
@@ -76,6 +73,18 @@ def affinity_webhook():
 
                         website_url = company_info.get("Website URL", "")
                         print(f'Status "To be contacted": {website_url}')
+
+                if body.get('value', {}).get('text', '') == 'Rejected':
+
+                    company_info = affinity_company_data(body)
+                    website_url = company_info.get("Website URL", "")
+
+                    if website_url != "":
+                        if company_info.get("Inbound Boolean", "") == "Yes":
+                            lemlist_export(company_info, "Rejected")
+
+                            website_url = company_info.get("Website URL", "")
+                            print(f'Status "Rejected": {website_url}')
 
         return "Affinity webhook received and processed", 200
 

@@ -13,6 +13,9 @@ def lemlist_export(company_info, campaign):
     elif campaign == "Outbound":
         campaign_name = "Outbound Automation"
         linkedin_params_value = 'true'
+    elif campaign == "Rejected":
+        campaign_name = "Inbound Rejected"
+        linkedin_params_value = 'false'
 
     # URL to get the list of campaigns
     campaigns_url = "https://api.lemlist.com/api/campaigns"
