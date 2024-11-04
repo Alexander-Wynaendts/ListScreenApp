@@ -93,32 +93,26 @@ def gmail_webhook_initial():
     if request.method == 'POST':
         data = request.json
 
-        print("RAW DATA")
-        print(data)
-
         email_info = gmail_inbound(data)
 
-        print("NOW WE ARE TALKING WALKING")
-        print(email_info)
+        first_name = email_info.get("First Name")
+        last_name = email_info.get("Last Name")
+        email = email_info.get("Email")
 
-        #first_name = email_info.get("First Name")
-        #last_name = email_info.get("Last Name")
-        #email = email_info.get("Email")
+        name = email_info.get("Name")
+        website_url = email_info.get("Website URL")
+        email_content = email_info.get("Email Content")
 
-        #name = email_info.get("Name")
-        #website_url = email_info.get("Website URL")
-        #email_content = email_info.get("Email Content")
+        if website_url != "":
+            add_company_to_affinity(name, website_url)
+            add_note_to_affinity(website_url, email_content)
+            source = "Gmail Inbound"
+            inbound_boolean = "Yes"
+            add_global_to_affinity(website_url, source, inbound_boolean)
 
-        #if website_url != "":
-        #    add_company_to_affinity(name, website_url)
-        #    add_note_to_affinity(website_url, email_content)
-        #    source = "Gmail Inbound"
-        #    inbound_boolean = "Yes"
-        #    add_global_to_affinity(website_url, source, inbound_boolean)
+            add_people_to_affinity(first_name, last_name, email, website_url)
 
-        #    add_people_to_affinity(first_name, last_name, email, website_url)
-
-        #    print(f"New company out of email: {website_url}")
+            print(f"New company out of email: {website_url}")
         return "Success", 200
 
 @app.route('/formulair-webhook', methods=['POST'])
