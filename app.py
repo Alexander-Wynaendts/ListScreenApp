@@ -121,11 +121,8 @@ def gmail_webhook_comments():
     if request.method == 'POST':
         data = request.json
 
-        print(data)
         website_url, last_comment = gmail_comments(data)
-
-        print(website_url)
-        print (last_comment)
+        add_note_to_affinity(website_url, last_comment)
 
         print(f"New comment on email")
         return "Success", 200
@@ -222,7 +219,7 @@ def fireflies_webhook():
 
             add_note_to_affinity(website_url, fireflies_note)
 
-        print(f"New transcript from Fireflies: {data}")
+        print(f"New transcript from Fireflies: {website_url}")
 
     return "Fireflies webhook received and processed", 200
 
