@@ -93,15 +93,19 @@ def gmail_webhook_initial():
     if request.method == 'POST':
         data = request.json
 
+        print("RAW DATA")
         print(data)
 
-        #sender = data.get('from', '')
-        #subject = data.get('subject', '')
-        #plain_body = data.get('plainBody', '')
-        #html_body = data.get('htmlBody', '')
+        sender = data.get('from', '')
+        subject = data.get('subject', '')
+        plain_body = data.get('plainBody', '')
+        html_body = data.get('htmlBody', '')
 
-        #email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
-        #email_info = gmail_inbound(email_info)
+        email_info = {'sender': sender, 'subject': subject, 'plain_body': plain_body, 'html_body': html_body}
+        email_info = gmail_inbound(email_info)
+
+        print("NOW WE ARE TALKING WALKING")
+        print(email_info)
 
         #first_name = email_info.get("First Name")
         #last_name = email_info.get("Last Name")
