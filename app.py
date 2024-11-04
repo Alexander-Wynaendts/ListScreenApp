@@ -122,7 +122,7 @@ def gmail_webhook_comments():
 
         print(data)
 
-        print(f"New comment on email: {"ok"}")
+        print(f"New comment on email")
         return "Success", 200
 
 @app.route('/formulair-webhook', methods=['POST'])
