@@ -89,7 +89,7 @@ def affinity_webhook():
         return "Affinity webhook received and processed", 200
 
 @app.route('/gmail-webhook', methods=['POST'])
-def gmail_webhook_initial():
+def gmail_webhook():
     if request.method == 'POST':
         data = request.json
 
@@ -113,6 +113,16 @@ def gmail_webhook_initial():
             add_people_to_affinity(first_name, last_name, email, website_url)
 
             print(f"New company out of email: {website_url}")
+        return "Success", 200
+
+@app.route('/gmail-webhook-comments', methods=['POST'])
+def gmail_webhook_comments():
+    if request.method == 'POST':
+        data = request.json
+
+        print(data)
+
+        print(f"New comment on email: {"ok"}")
         return "Success", 200
 
 @app.route('/formulair-webhook', methods=['POST'])
