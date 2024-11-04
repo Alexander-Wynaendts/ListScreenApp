@@ -52,11 +52,11 @@ def add_company_to_affinity(name, website_url):
     organization_id = get_organization_by_domain(website_url)
     if organization_id:
         if check_list_entry_exists(organization_id):
-            return
+            return False
         else:
             create_list_entry(organization_id)
-            return
+            return True
     else:
         organization_id = create_organization(name, website_url)
         create_list_entry(organization_id)
-        return
+        return True

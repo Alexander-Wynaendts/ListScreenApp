@@ -2,6 +2,7 @@ from flask import Flask, request
 import time
 
 from script.gmail_inbound import gmail_inbound
+from script.gmail_comments import gmail_comments
 from script.affinity_company_data import affinity_company_data
 from script.website_scraping import website_scraping
 from script.website_analysis import website_analysis
@@ -104,13 +105,13 @@ def gmail_webhook():
         email_content = email_info.get("Email Content")
 
         if website_url != "":
-            add_company_to_affinity(name, website_url)
-            add_note_to_affinity(website_url, email_content)
-            source = "Gmail Inbound"
-            inbound_boolean = "Yes"
-            add_global_to_affinity(website_url, source, inbound_boolean)
+            if add_company_to_affinity(name, website_url):
+                add_note_to_affinity(website_url, email_content)
+                source = "Gmail Inbound"
+                inbound_boolean = "Yes"
+                add_global_to_affinity(website_url, source, inbound_boolean)
 
-            add_people_to_affinity(first_name, last_name, email, website_url)
+                add_people_to_affinity(first_name, last_name, email, website_url)
 
             print(f"New company out of email: {website_url}")
         return "Success", 200
@@ -121,6 +122,10 @@ def gmail_webhook_comments():
         data = request.json
 
         print(data)
+        website_url, last_comment = gmail_comments(data)
+
+        print(website_url)
+        print (last_comment)
 
         print(f"New comment on email")
         return "Success", 200
