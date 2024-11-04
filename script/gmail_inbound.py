@@ -8,6 +8,9 @@ def gmail_inbound(email_info):
     plain_body = email_info.get('plainBody', '').strip()
     html_body = email_info.get('htmlBody', '').strip()
 
+    # Initialize the sender email
+    sender_email = ""
+
     # Check if the email is a forwarded message
     if subject.startswith("Fwd:"):
         # Extract content after the forwarded message marker
@@ -21,8 +24,6 @@ def gmail_inbound(email_info):
             if forwarded_match:
                 original_sender_name = forwarded_match.group(1).strip()
                 sender_email = forwarded_match.group(2).strip()
-            else:
-                sender_email = ''
 
             # Extract the original subject
             forwarded_subject_match = re.search(r"Subject:\s*(.*?)\n", original_body)
@@ -34,16 +35,16 @@ def gmail_inbound(email_info):
             content_match = re.split(r"\r\n\r\n", original_body, maxsplit=1)
             if len(content_match) > 1:
                 plain_body = content_match[1].strip()
-        else:
-            sender_email = email_info.get('from', '')
     else:
-        sender_email = email_info.get('from', '')
+        # Extract email from 'from' field if not a forwarded message
+        sender = email_info.get('from', '')
+        match = re.match(r".*<(.+?)>", sender)
+        sender_email = match.group(1) if match else sender
 
     # Parse the email address for sender details and construct company info
     if '@' in sender_email:
         company_info["Email"] = sender_email
-        local_part = sender_email.split('@')[0]
-        domain = sender_email.split('@')[1].lower()
+        local_part, domain = sender_email.split('@')[0], sender_email.split('@')[1].lower()
 
         # Extract first and last name from local part
         if '.' in local_part:
@@ -51,8 +52,8 @@ def gmail_inbound(email_info):
             company_info["First Name"] = first_name.capitalize()
             company_info["Last Name"] = last_name.capitalize()
         else:
-            company_info["First Name"] = ""
-            company_info["Last Name"] = local_part.capitalize()
+            company_info["First Name"] = local_part.capitalize()
+            company_info["Last Name"] = ""
 
         # Exclude common domains for constructing the website URL
         common_domains = [
