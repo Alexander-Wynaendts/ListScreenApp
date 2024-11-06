@@ -21,48 +21,68 @@ HTML TEMPLATE:
     <title>Meeting Summary</title>
 </head>
 <body>
-    <h4>Meeting Summary</h4>
-    <p><strong>Summary:</strong> {{Summary of the meeting}}</p>
+    <h3>Meeting Summary</h3>
 
-    <h5>Founders</h5>
+    <h4>Summary</h4>
+    <p><strong>Summary:</strong> {{Provide a brief summary of the meeting, focusing on key points discussed and general impressions.}}</p>
+
+    <h4>Founders</h4>
     <ul>
-        <li>{{List each founder with their title and a one-line description. Only include founders, not other team members or advisors.}}</li>
+        <li>{{List each founder with their title and a brief description of their relevant experience. Focus on founders only, excluding other team members or advisors.}}</li>
     </ul>
 
-    <h5>One-line Description</h5>
-    <p>{{A single line describing the startup’s business focus.}}</p>
+    <h4>One-line Description</h4>
+    <p>{{Provide a concise line describing the startup’s business focus.}}</p>
 
-    <h5>Traction</h5>
-    <p>{{Key metrics, such as ARR, projected ARR, non-recurring revenue, projected revenue, number of pilot projects (indicate if paying), and other relevant growth indicators.}}</p>
+    <h4>Traction</h4>
+    <p>{{Highlight key traction metrics, such as ARR, projected ARR, non-recurring revenue, projected revenue, number of pilot projects (indicate if paying), and other relevant growth indicators.}}</p>
 
-    <h5>Why Them?</h5>
-    <p>{{Reasons why the founders are well-suited (or not) to address this problem.}}</p>
+    <h4>Why Them?</h4>
+    <p>{{Analyze why the founders are well-suited (or not) to address this problem based on their background and experience.}}</p>
 
-    <h5>Why Now?</h5>
-    <p>{{Explain why the timing is ideal for this product. Mention any market changes that make it viable now.}}</p>
+    <h4>Why Now?</h4>
+    <p>{{Discuss why the timing is advantageous for this product. Mention any market shifts that make this solution timely or urgent.}}</p>
 
-    <h5>Too Hyped?</h5>
-    <p>{{Is the sector or product overhyped? Is the proposed funding or valuation realistic?}}</p>
+    <h4>Too Hyped?</h4>
+    <p>{{Assess whether the sector or product might be overhyped. Evaluate if the proposed funding or valuation aligns with current market trends.}}</p>
 
-    <h5>Too Greedy?</h5>
-    <p>{{Assessment of the founders' ambitions and growth plans. Are they realistic or overly aggressive?}}</p>
+    <h4>Too Greedy?</h4>
+    <p>{{Consider the founders' ambitions and growth plans, noting if they are realistic or overly aggressive.}}</p>
 
     <h4>In-Depth Analysis</h4>
-    <ul>
-        <li><strong>ICP:</strong> {{Ideal Customer Profile, including company size, geography, contract size, and any other relevant details.}}</li>
-        <li><strong>Addressed Problem:</strong> {{Description of the problem, its importance, and scale.}}</li>
-        <li><strong>Team:</strong> {{Summarize relevant experience and roles for each team member, one paragraph each.}}</li>
-        <li><strong>Market:</strong> {{Market size, target capture, and specific market sector.}}</li>
-        <li><strong>Sales:</strong> {{Details of the current sales pipeline if available.}}</li>
-        <li><strong>Product:</strong> {{Brief description of the product and its core functionality.}}</li>
-        <li><strong>Competition:</strong> {{Competitors, their comparisons, and differentiation factors. If a main competitor is mentioned, briefly describe similarities and differences.}}</li>
-        <li><strong>Problems:</strong> {{Any IP issues, cap table concerns, or other flagged problems.}}</li>
-        <li><strong>Current Funding Situation:</strong> {{Previous funding details, including valuation, funding type, investors, and funding timeline if mentioned.}}</li>
-        <li><strong>Raising Funding:</strong> {{Details on current fundraising efforts, including target amount, funding type, valuation, timeline, lead/follow search, and any commitments.}}</li>
-    </ul>
 
-    <h5>Q&A</h5>
-    <p>{{A summary of questions and answers from the meeting (exclude small talk).}}</p>
+    <h4>ICP</h4>
+    <p>{{Define the Ideal Customer Profile, covering aspects such as company size, geography, expected contract size, and other relevant details.}}</p>
+
+    <h4>Addressed Problem</h4>
+    <p>{{Explain the problem the startup aims to solve, its significance, and the scale of its impact.}}</p>
+
+    <h4>Team</h4>
+    <p>{{Summarize relevant experience and roles for each team member, providing a paragraph for each, based on their background and contribution to the project.}}</p>
+
+    <h4>Market</h4>
+    <p>{{Describe the market size, target market segment, and the projected capture rate.}}</p>
+
+    <h4>Sales</h4>
+    <p>{{Provide details on the current sales pipeline, including key leads and expected timeline if available.}}</p>
+
+    <h4>Product</h4>
+    <p>{{Describe the product, its core functionality, and any unique features that make it stand out.}}</p>
+
+    <h4>Competition</h4>
+    <p>{{Identify key competitors, their similarities, and how this startup differentiates itself from them.}}</p>
+
+    <h4>Problems?</h4>
+    <p>{{Note any potential issues such as IP challenges, cap table concerns, or other flagged risks.}}</p>
+
+    <h4>Current Funding Situation</h4>
+    <p>{{Describe previous funding rounds, including amounts, valuation, funding type, main investors, and funding timeline if provided.}}</p>
+
+    <h4>Raising Funding</h4>
+    <p>{{Outline details on current fundraising efforts, including target amount, funding type, valuation, timeline, lead or follow requirements, and any commitments or goals.}}</p>
+
+    <h3>Q&A</h3>
+    <p>{{Summarize key questions and answers from the meeting, excluding small talk.}}</p>
 </body>
 </html>
 """
