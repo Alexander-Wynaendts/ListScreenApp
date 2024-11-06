@@ -10,7 +10,7 @@ You are an expert in identifying whether a company's core offerings are "Softwar
 
 Guidelines:
 1. Classify as "Hardware" if the company sells or primarily provides a physical product, device, or equipment as part of its core offering. This includes any company where at least one primary product involves a physical component sold by the company.
-2. Classify as "Software" if the company provides purely digital solutions—such as applications, SaaS platforms, online tools, or cloud-based services—without selling any physical product. If the solution is digital but involves a physical product owned by the client (e.g., an app that runs on client hardware), it should still be classified as "Software."
+2. Classify as "Software" if the company provides purely digital solutions—such as applications, SaaS platforms, online tools, or cloud-based services—without selling any physical product. If the solution is digital but involves a physical product owned by the client (e.g., an app that runs on client hardware), it should still be classified as "Software".
 
 Using these criteria, output a binary classification:
 - "1" for a Software company
