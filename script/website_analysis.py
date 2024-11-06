@@ -9,8 +9,8 @@ def gpt_software_hardware_screen(website_data):
 You are an expert in identifying whether a company's core offerings are "Software" or "Hardware" based on provided website content. Below is a dictionary of website URLs and their corresponding content summaries, structured as link1: content1, link2: content2, etc.
 
 Guidelines:
-1. Classify as "Hardware" if the primary offering involves any physical product, device, or equipment. This includes products that combine digital elements with physical components.
-2. Classify as "Software" only if the company offers purely digital solutions without any physical product. Digital solutions might include applications, SaaS platforms, online tools, and cloud-based services.
+1. Classify as "Hardware" if the company sells or primarily provides a physical product, device, or equipment as part of its core offering. This includes any company where at least one primary product involves a physical component sold by the company.
+2. Classify as "Software" if the company provides purely digital solutions—such as applications, SaaS platforms, online tools, or cloud-based services—without selling any physical product. If the solution is digital but involves a physical product owned by the client (e.g., an app that runs on client hardware), it should still be classified as "Software."
 
 Using these criteria, output a binary classification:
 - "1" for a Software company
