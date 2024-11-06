@@ -95,7 +95,7 @@ HTML TEMPLATE:
 
     # Strip and directly return HTML response
     fireflies_html = response['choices'][0]['message']['content'].strip()
-    fireflies_html = re.sub(r'^"+|"+$', '', fireflies_html).strip()
+    fireflies_html = re.sub(r"^[\"']+|[\"']+$", '', fireflies_html).strip()
 
     return fireflies_html
 
