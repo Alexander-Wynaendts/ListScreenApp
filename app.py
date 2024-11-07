@@ -17,7 +17,7 @@ from script.fireflies_transcript_processing import fireflies_transcript_processi
 from script.lemlist_export import lemlist_export
 
 app = Flask(__name__)
-app.secret_key = "EntouragePitchPulse_SecretKey"  # Use a secure, random key in production
+app.secret_key = "Assemblage_secret"  # Use a secure, random key in production
 app.permanent_session_lifetime = timedelta(minutes=5)
 
 @app.route('/', methods=['GET', 'POST'])
