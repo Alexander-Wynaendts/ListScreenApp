@@ -94,7 +94,7 @@ def gpt_link_selection(website_links, prompt_templates):
         return []
 
     link_list_text = '\n'.join(website_links)
-    prompt = prompt_template.format(link_list_text=link_list_text)
+    prompt = prompt_template.format(data=link_list_text)
 
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",

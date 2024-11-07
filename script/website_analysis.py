@@ -12,7 +12,7 @@ def gpt_software_hardware_screen(website_data, prompt_templates):
         return None
 
     # Format the prompt with website_data
-    prompt = prompt_template.format(website_data=website_data)
+    prompt = prompt_template.format(data=website_data)
 
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
@@ -31,7 +31,7 @@ def gpt_software_service_screen(website_data, prompt_templates):
         return None
 
     # Format the prompt with website_data
-    prompt = prompt_template.format(website_data=website_data)
+    prompt = prompt_template.format(data=website_data)
 
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
@@ -50,7 +50,7 @@ def gpt_enterprise_analysis(website_data, prompt_templates):
         return None
 
     # Format the prompt with website_data
-    prompt = prompt_template.format(website_data=website_data)
+    prompt = prompt_template.format(data=website_data)
 
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",

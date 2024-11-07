@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Prompt Manager</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
+  <div class="absolute top-4 left-4">
+    <a href="/">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="h-10 w-auto">
+    </a>
+  </div>
     <div class="max-w-5xl mx-auto my-12 text-center">
         <h2 class="text-4xl font-semibold text-[#2daf29] mb-8">Prompt Management</h2>
 
@@ -15,44 +21,76 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Website Scraping (Links) Category -->
+            <!-- Website Scraping Category -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <div class="text-xl font-bold text-gray-600 mb-4">Website Scraping</div>
-                <div class="flex flex-col gap-4">
+                <div class="border border-gray-300 p-4 rounded-lg">
                     <button onclick="window.location.href='/prompt/Links Selection'"
-                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        class="w-full py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
                         Links Selection
                     </button>
+                    <p class="text-gray-600 mt-2 text-sm text-left">
+                        During the scraping process, GPT will select the most relevant links to understand the company's offering.
+                    </p>
                 </div>
             </div>
 
-            <!-- Website Analysis (Classification and Analysis) Category -->
+            <!-- Website Analysis Category -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <div class="text-xl font-bold text-gray-600 mb-4">Website Analysis</div>
-                <div class="flex flex-col gap-4">
-                    <button onclick="window.location.href='/prompt/Website Hardware-Software Classification'"
-                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
-                        Hardware-Software Classification
+
+                <!-- Hardware-Software Classification Frame -->
+                <div class="border border-gray-300 p-4 rounded-lg mb-4">
+                    <button onclick="window.location.href='/prompt/Website Software-Hardware Classification'"
+                        class="w-full py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Software-Hardware Classification
                     </button>
-                    <button onclick="window.location.href='/prompt/Website Service-Software Classification'"
-                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
-                        Service-Software Classification
+                    <p class="text-gray-600 mt-2 text-sm text-left">
+                        GPT will classify the company as offering a hardware or software product based on the scraped website data.
+                    </p>
+                </div>
+
+                <!-- Service-Software Classification Frame -->
+                <div class="border border-gray-300 p-4 rounded-lg mb-4">
+                    <button onclick="window.location.href='/prompt/Website Software-Service Classification'"
+                        class="w-full py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Software-Service Classification
                     </button>
+                    <p class="text-gray-600 mt-2 text-sm text-left">
+                        GPT will determine if the company's product is a service or SaaS based on the scraped website data.
+                    </p>
+                </div>
+
+                <!-- Full Website Analysis Frame -->
+                <div class="border border-gray-300 p-4 rounded-lg">
                     <button onclick="window.location.href='/prompt/Website Analysis'"
-                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        class="w-full py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
                         Full Website Analysis
                     </button>
+                    <p class="text-gray-600 mt-2 text-sm text-left">
+                        GPT will analyze the company to provide:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 text-sm text-left ml-4">
+                        <li>1-sentence description</li>
+                        <li>Industry</li>
+                        <li>Client type</li>
+                        <li>Revenue model</li>
+                        <li>Region</li>
+                    </ul>
                 </div>
             </div>
 
             <!-- Fireflies Notes Category -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <div class="text-xl font-bold text-gray-600 mb-4">Fireflies Notes</div>
-                <div class="flex flex-col gap-4">
+                <div class="border border-gray-300 p-4 rounded-lg">
                     <button onclick="window.location.href='/prompt/Fireflies Notes'"
-                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        class="w-full py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
                         Fireflies Notes
                     </button>
+                    <p class="text-gray-600 mt-2 text-sm text-left">
+                        The transcript from Fireflies is processed to summarize the main points after a first call with a founder.
+                    </p>
                 </div>
             </div>
         </div>

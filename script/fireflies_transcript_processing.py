@@ -14,7 +14,7 @@ def gpt_fireflies_html_formatting(output, prompt_templates):
         return None
 
     # Format the prompt with the output
-    prompt = prompt_template.format(output=output)
+    prompt = prompt_template.format(data=output)
 
     # Sending the prompt to the GPT API for strict HTML output
     response = openai.ChatCompletion.create(
