@@ -3,87 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Prompt Manager</title>
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-            color: #343a40;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            text-align: center;
-        }
-        h2 {
-            font-size: 2rem;
-            color: #2daf29;
-            margin-bottom: 20px;
-        }
-        .category {
-            margin-top: 30px;
-            margin-bottom: 10px;
-            font-size: 1.5rem;
-            color: #6c757d;
-            font-weight: bold;
-        }
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .button-container button {
-            padding: 15px;
-            font-size: 1rem;
-            background-color: #2daf29;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .button-container button:hover {
-            background-color: #1e8723;
-        }
-        .info-box {
-            background-color: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        .info-box h5 {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-            color: #495057;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h2>Prompt Management</h2>
+<body class="bg-gray-100 text-gray-800 font-sans">
+    <div class="max-w-5xl mx-auto my-12 text-center">
+        <h2 class="text-4xl font-semibold text-[#2daf29] mb-8">Prompt Management</h2>
 
-        <div class="info-box">
-            <h5>About Prompt Management</h5>
+        <div class="bg-gray-200 p-6 rounded-lg mb-8 shadow-lg">
+            <h5 class="text-xl font-semibold text-gray-700 mb-4">About Prompt Management</h5>
             <p>This section is designed to help you adapt and manage the prompts used in Entourage's VC process. You can select from various prompts categorized for different stages of the investment analysis.</p>
         </div>
 
-        <!-- Website Scraping (Links) Category -->
-        <div class="category">Website Scraping</div>
-        <div class="button-container">
-            <button onclick="window.location.href='/prompt/Links Selection'">Website Scraping Process (Links Selection)</button>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Website Scraping (Links) Category -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-xl font-bold text-gray-600 mb-4">Website Scraping</div>
+                <div class="flex flex-col gap-4">
+                    <button onclick="window.location.href='/prompt/Links Selection'"
+                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Links Selection
+                    </button>
+                </div>
+            </div>
 
-        <!-- Website Analysis (Classification and Analysis) Category -->
-        <div class="category">Website Analysis</div>
-        <div class="button-container">
-            <button onclick="window.location.href='/prompt/Website Hardware-Software Classification'">Hardware-Software Classification</button>
-            <button onclick="window.location.href='/prompt/Website Service-Software Classification'">Service-Software Classification</button>
-            <button onclick="window.location.href='/prompt/Website Analysis'">Full Website Analysis</button>
-        </div>
+            <!-- Website Analysis (Classification and Analysis) Category -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-xl font-bold text-gray-600 mb-4">Website Analysis</div>
+                <div class="flex flex-col gap-4">
+                    <button onclick="window.location.href='/prompt/Website Hardware-Software Classification'"
+                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Hardware-Software Classification
+                    </button>
+                    <button onclick="window.location.href='/prompt/Website Service-Software Classification'"
+                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Service-Software Classification
+                    </button>
+                    <button onclick="window.location.href='/prompt/Website Analysis'"
+                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Full Website Analysis
+                    </button>
+                </div>
+            </div>
 
-        <!-- Fireflies Notes Category -->
-        <div class="category">Fireflies Notes</div>
-        <div class="button-container">
-            <button onclick="window.location.href='/prompt/Fireflies Notes'">Fireflies Notes Analysis</button>
+            <!-- Fireflies Notes Category -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-xl font-bold text-gray-600 mb-4">Fireflies Notes</div>
+                <div class="flex flex-col gap-4">
+                    <button onclick="window.location.href='/prompt/Fireflies Notes'"
+                        class="py-3 bg-[#56EB9B] hover:bg-[#1F2430] text-white rounded-md font-semibold transition-colors duration-300">
+                        Fireflies Notes
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

@@ -26,4 +26,4 @@ blinker==1.5
 protobuf
 
 #data
-yaml
+PyYAML
