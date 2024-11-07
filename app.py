@@ -1,5 +1,6 @@
-from flask import Flask, request
-import time
+from flask import Flask, render_template, redirect, url_for, session, request
+import yaml
+from datetime import timedelta
 
 from script.gmail_inbound import gmail_inbound
 from script.gmail_comments import gmail_comments
@@ -16,11 +17,63 @@ from script.fireflies_transcript_processing import fireflies_transcript_processi
 from script.lemlist_export import lemlist_export
 
 app = Flask(__name__)
+app.secret_key = "EntouragePitchPulse_SecretKey"  # Use a secure, random key in production
+app.permanent_session_lifetime = timedelta(minutes=5)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        with open('data/password.txt', 'r') as file:
+            original_password = file.read().strip()
+        entered_password = request.form.get('password')
+
+        if entered_password == original_password:
+            session.permanent = True  # Make the session permanent for the timeout to apply
+            session['authenticated'] = True
+            return redirect(url_for('prompt_manager'))
+        else:
+            return render_template('index.html', error="Incorrect password. Please try again.")
+
+    # If session is authenticated, go directly to prompt manager
+    if session.get('authenticated'):
+        return redirect(url_for('prompt_manager'))
+
+    return render_template('index.html')
+
+@app.route('/prompt_manager')
+def prompt_manager():
+    if not session.get('authenticated'):
+        return redirect(url_for('index'))
+    return render_template('prompt_manager.html')
+
+@app.route('/prompt/<prompt_type>', methods=['GET', 'POST'])
+def prompt_update(prompt_type):
+    if not session.get('authenticated'):
+        return redirect(url_for('index'))  # Corrected to use 'index' as the endpoint name
+
+    # Load prompt templates from YAML each time this route is accessed
+    with open('data/prompt_templates.yaml', 'r') as file:
+        prompt_templates = yaml.safe_load(file)
+
+    if request.method == 'POST':
+        new_template = request.form.get("template")
+        if new_template:
+            prompt_templates[prompt_type] = new_template
+            # Update the YAML file to save changes persistently
+            with open('data/prompt_templates.yaml', 'w') as file:
+                yaml.dump(prompt_templates, file)
+        return redirect(url_for('prompt_manager'))
+
+    template = prompt_templates.get(prompt_type, "Template not found.")
+    return render_template('prompt_edit.html', prompt_type=prompt_type, template=template)
 
 @app.route('/affinity-webhook', methods=['POST'])
 def affinity_webhook():
     if request.method == 'POST':
         data = request.json
+
+        with open('data/prompt_templates.yaml', 'r') as file:
+            prompt_templates = yaml.safe_load(file)
 
         # Check for organization.created event
         if data.get('type') == 'list_entry.created':
@@ -29,8 +82,8 @@ def affinity_webhook():
             website_url = body.get("entity", {}).get('domain', '')
 
             if website_url:
-                website_data = website_scraping(website_url)
-                company_screened = website_analysis(website_data)
+                website_data = website_scraping(website_url, prompt_templates)
+                company_screened = website_analysis(website_data, prompt_templates)
                 company_screened["Website URL"] = website_url
                 company_screened['Status'] = "To screen"
 
@@ -48,8 +101,8 @@ def affinity_webhook():
                     website_url = entry_data.get("Website URL")
 
                     if website_url:
-                        website_data = website_scraping(website_url)
-                        company_screened = website_analysis(website_data)
+                        website_data = website_scraping(website_url, prompt_templates)
+                        company_screened = website_analysis(website_data, prompt_templates)
                         company_screened["Website URL"] = website_url
                         company_screened['Status'] = "To screen"
 
@@ -213,9 +266,12 @@ def fireflies_webhook():
     if request.method == 'POST':
         data = request.json
 
+        with open('data/prompt_templates.yaml', 'r') as file:
+            prompt_templates = yaml.safe_load(file)
+
         if data.get("eventType", "") == "Transcription completed":
             transcript_id = data.get("meetingId", "")
-            fireflies_note, website_url = fireflies_transcript_processing(transcript_id)
+            fireflies_note, website_url = fireflies_transcript_processing(transcript_id, prompt_templates)
 
             add_note_to_affinity(website_url, fireflies_note)
 

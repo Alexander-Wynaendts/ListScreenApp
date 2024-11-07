@@ -1,0 +1,93 @@
+Fireflies Notes: "You are a venture capitalist investing in early-stage B2B companies.\
+  \ Given the following meeting data, including meeting notes and transcript, provide\
+  \ a response strictly formatted in the HTML structure below. It is important that\
+  \ you act in a critical way, each question should be answered as analytically as\
+  \ possible. The template is below. If the text is in-between curly brackets, it\
+  \ is a description of what is expected. Only answer using the data given, do not\
+  \ answer any question using your own knowledge! Be as critical as possible! Only\
+  \ return HTML.\n\nMeeting transcript:\n{output}\n\nHTML TEMPLATE:\n<!DOCTYPE html>\n\
+  <html>\n<head>\n    <title>Meeting Summary</title>\n</head>\n<body>\n    <h3>Meeting\
+  \ Summary</h3>\n\n    <h4>Summary</h4>\n    <p><strong>Summary:</strong> {{Provide\
+  \ a brief summary of the meeting, focusing on key points discussed and general impressions.}}</p>\n\
+  \n    <h4>Founders</h4>\n    <ul>\n        <li>{{List each founder with their title\
+  \ and a brief description of their relevant experience. Focus on founders only,\
+  \ excluding other team members or advisors.}}</li>\n    </ul>\n\n    <h4>One-line\
+  \ Description</h4>\n    <p>{{Provide a concise line describing the startup\u2019\
+  s business focus.}}</p>\n\n    <h4>Traction</h4>\n    <p>{{Highlight key traction\
+  \ metrics, such as ARR, projected ARR, non-recurring revenue, projected revenue,\
+  \ number of pilot projects (indicate if paying), and other relevant growth indicators.}}</p>\n\
+  \n    <h4>Why Them?</h4>\n    <p>{{Analyze why the founders are well-suited (or\
+  \ not) to address this problem based on their background and experience.}}</p>\n\
+  \n    <h4>Why Now?</h4>\n    <p>{{Discuss why the timing is advantageous for this\
+  \ product. Mention any market shifts that make this solution timely or urgent.}}</p>\n\
+  \n    <h4>Too Hyped?</h4>\n    <p>{{Assess whether the sector or product might be\
+  \ overhyped. Evaluate if the proposed funding or valuation aligns with current market\
+  \ trends.}}</p>\n\n    <h4>Too Greedy?</h4>\n    <p>{{Consider the founders' ambitions\
+  \ and growth plans, noting if they are realistic or overly aggressive.}}</p>\n\n\
+  \    <h4>In-Depth Analysis</h4>\n\n    <h4>ICP</h4>\n    <p>{{Define the Ideal Customer\
+  \ Profile, covering aspects such as company size, geography, expected contract size,\
+  \ and other relevant details.}}</p>\n\n    <h4>Addressed Problem</h4>\n    <p>{{Explain\
+  \ the problem the startup aims to solve, its significance, and the scale of its\
+  \ impact.}}</p>\n\n    <h4>Team</h4>\n    <p>{{Summarize relevant experience and\
+  \ roles for each team member, providing a paragraph for each, based on their background\
+  \ and contribution to the project.}}</p>\n\n    <h4>Market</h4>\n    <p>{{Describe\
+  \ the market size, target market segment, and the projected capture rate.}}</p>\n\
+  \n    <h4>Sales</h4>\n    <p>{{Provide details on the current sales pipeline, including\
+  \ key leads and expected timeline if available.}}</p>\n\n    <h4>Product</h4>\n\
+  \    <p>{{Describe the product, its core functionality, and any unique features\
+  \ that make it stand out.}}</p>\n\n    <h4>Competition</h4>\n    <p>{{Identify key\
+  \ competitors, their similarities, and how this startup differentiates itself from\
+  \ them.}}</p>\n\n    <h4>Problems?</h4>\n    <p>{{Note any potential issues such\
+  \ as IP challenges, cap table concerns, or other flagged risks.}}</p>\n\n    <h4>Current\
+  \ Funding Situation</h4>\n    <p>{{Describe previous funding rounds, including amounts,\
+  \ valuation, funding type, main investors, and funding timeline if provided.}}</p>\n\
+  \n    <h4>Raising Funding</h4>\n    <p>{{Outline details on current fundraising\
+  \ efforts, including target amount, funding type, valuation, timeline, lead or follow\
+  \ requirements, and any commitments or goals.}}</p>\n\n    <h3>Q&A</h3>\n    <p>{{Summarize\
+  \ key questions and answers from the meeting, excluding small talk.}}</p>\n</body>\n\
+  </html>\n"
+Links Selection: "From the list of URLs on a company website, choose the 3 most relevant\
+  \ pages to determine if the company is a SaaS startup. Prioritize URLs that:\r\n\
+  \r\n- Clearly describe the company's product or services.\r\n- Provide information\
+  \ on pricing, subscription plans, or service delivery methods.\r\n- Include details\
+  \ about the types of clients the company serves.\r\n\r\nIgnore URLs related to blogs,\
+  \ careers, or unrelated marketing content.\r\n\r\nReturn the top 2 URLs, each on\
+  \ a new line, with no additional text or formatting.\r\n\r\n**Link list**\r\n{link_list_text}\r\
+  \n"
+Website Analysis: "You are an expert in analyzing companies based on the following\
+  \ dictionary of website links and their corresponding content. You are provided\
+  \ with a company's website scraped content stored in the following dictionary format\
+  \ (link1:content1, link2:content2, ...):\n\n{website_data}\n\nAnalyze the content\
+  \ and return the following details in the exact format specified:\n\nProduct/Service:\
+  \ <Short, straightforward description of the company\u2019s main product or service,\
+  \ e.g., \"Automated quality control inspection for fresh produce to reduce waste.\"\
+  >\nIndustry: <Simplified industry classification, e.g., \"E-commerce,\" \"EdTech,\"\
+  \ \"Fashion.\">\nClient Type: <B2B or B2C>\nRevenue Model: <Use only one or two\
+  \ words like \"subscription,\" \"transaction fee,\" or \"commission.\">\nMarket\
+  \ Region: <Return only \"Global\" or a specific country, continent, or region, e.g.,\
+  \ \"Global,\" \"Europe,\" \"USA.\">\n"
+Website Software-Hardware Classification: "You are an expert in identifying whether\
+  \ a company's core offerings are \"Software\" or \"Hardware\" based on provided\
+  \ website content. Below is a dictionary of website URLs and their corresponding\
+  \ content summaries, structured as link1: content1, link2: content2, etc.\n\nGuidelines:\n\
+  1. Classify as \"Hardware\" if the company sells or primarily provides a physical\
+  \ product, device, or equipment as part of its core offering. This includes any\
+  \ company where at least one primary product involves a physical component sold\
+  \ by the company.\n2. Classify as \"Software\" if the company provides purely digital\
+  \ solutions\u2014such as applications, SaaS platforms, online tools, or cloud-based\
+  \ services\u2014without selling any physical product. If the solution is digital\
+  \ but involves a physical product owned by the client (e.g., an app that runs on\
+  \ client hardware), it should still be classified as \"Software\".\n\nUsing these\
+  \ criteria, output a binary classification:\n- \"1\" for a Software company\n- \"\
+  0\" for a Hardware company\n\n{website_data}\n"
+Website Software-Service Classification: "You are an expert in distinguishing companies\
+  \ as either \"SaaS\" (Software as a Service) or \"Service\" providers, based on\
+  \ the information given. Below is a dictionary of website URLs and their corresponding\
+  \ content summaries, structured as link1: content1, link2: content2, etc.\n\nClassification\
+  \ Guidelines:\n1. Classify as \"SaaS\" if the company's primary offering is a purely\
+  \ software-based platform or application that customers access online, typically\
+  \ subscription-based and self-service, without needing direct human involvement\
+  \ to deliver the service.\n2. Classify as \"Service\" if the company\u2019s primary\
+  \ offerings involve services delivered manually by individuals, such as consulting,\
+  \ advisory, agency work, or other human-driven activities.\n\nProvide a binary output:\n\
+  - \"1\" for SaaS\n- \"2\" for Service\n\n{website_data}\n"

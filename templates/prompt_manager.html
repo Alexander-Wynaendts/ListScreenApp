@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prompt Manager</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            color: #343a40;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #2daf29;
+            margin-bottom: 20px;
+        }
+        .category {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 15px;
+            font-size: 1rem;
+            background-color: #2daf29;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-container button:hover {
+            background-color: #1e8723;
+        }
+        .info-box {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .info-box h5 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Prompt Management</h2>
+
+        <div class="info-box">
+            <h5>About Prompt Management</h5>
+            <p>This section is designed to help you adapt and manage the prompts used in Entourage's VC process. You can select from various prompts categorized for different stages of the investment analysis.</p>
+        </div>
+
+        <!-- Website Scraping (Links) Category -->
+        <div class="category">Website Scraping</div>
+        <div class="button-container">
+            <button onclick="window.location.href='/prompt/Links Selection'">Website Scraping Process (Links Selection)</button>
+        </div>
+
+        <!-- Website Analysis (Classification and Analysis) Category -->
+        <div class="category">Website Analysis</div>
+        <div class="button-container">
+            <button onclick="window.location.href='/prompt/Website Hardware-Software Classification'">Hardware-Software Classification</button>
+            <button onclick="window.location.href='/prompt/Website Service-Software Classification'">Service-Software Classification</button>
+            <button onclick="window.location.href='/prompt/Website Analysis'">Full Website Analysis</button>
+        </div>
+
+        <!-- Fireflies Notes Category -->
+        <div class="category">Fireflies Notes</div>
+        <div class="button-container">
+            <button onclick="window.location.href='/prompt/Fireflies Notes'">Fireflies Notes Analysis</button>
+        </div>
+    </div>
+</body>
+</html>

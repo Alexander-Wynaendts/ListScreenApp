@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit {{ prompt_type }}</title>
+</head>
+<body>
+    <h2>Edit Prompt Template: {{ prompt_type }}</h2>
+    <form method="POST">
+        <textarea name="template" rows="20" cols="80">{{ template }}</textarea><br>
+        <button type="submit">Save Changes</button>
+    </form>
+    <button onclick="window.location.href='/'">Back to Main Page</button>
+</body>
+</html>

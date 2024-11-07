@@ -86,22 +86,15 @@ def page_scraping(website_url):
     website_content = "\n".join(structured_text)
     return website_content, links
 
-def gpt_link_selection(website_links):
+def gpt_link_selection(website_links, prompt_templates):
+    # Retrieve the link selection prompt template
+    prompt_template = prompt_templates.get("Links Selection", "")
+    if not prompt_template:
+        print("Error: 'Links Selection' prompt template not found.")
+        return []
+
     link_list_text = '\n'.join(website_links)
-    prompt = f"""
-From the following list of URLs on a company website, choose the 3 most relevant pages to determine if the company is a SaaS startup. Prioritize URLs that:
-
-- Clearly describe the company's product or services.
-- Provide information on pricing, subscription plans, or service delivery methods.
-- Include details about the types of clients the company serves.
-
-Ignore URLs related to blogs, careers, or unrelated marketing content.
-
-Return the top 2 URLs, each on a new line, with no additional text or formatting.
-
-**Link list**
-{link_list_text}
-"""
+    prompt = prompt_template.format(link_list_text=link_list_text)
 
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
@@ -113,7 +106,7 @@ Return the top 2 URLs, each on a new line, with no additional text or formatting
     links = re.findall(r'(https?://[^\s]+)', gpt_response)
     return links[:3]
 
-def website_scraping(website_url):
+def website_scraping(website_url, prompt_templates):
     # Step 1: Scrape the landing page content and links
     website_content, link_list = page_scraping(website_url)
     if website_content is None:
@@ -121,7 +114,7 @@ def website_scraping(website_url):
         return {website_url: {}}
 
     # Step 2: Select the most relevant links using GPT
-    selected_links = gpt_link_selection(link_list)
+    selected_links = gpt_link_selection(link_list, prompt_templates)
 
     # Step 3: Scrape all relevant website links and store in a dictionary
     website_data = {website_url: website_content}
