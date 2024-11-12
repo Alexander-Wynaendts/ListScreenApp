@@ -40,6 +40,8 @@ def page_scraping(website_url):
     for prefix in prefixes:
         test_url = prefix + website_url_no_protocol
         soup = scrape_page(test_url)
+        print("WEBSITE CONTENT")
+        print(soup)
         if soup is not None:
             website_url = test_url  # Update website_url to the working URL
             break
